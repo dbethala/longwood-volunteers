@@ -1,0 +1,276 @@
+/* To control the height, font size, and position of the "Volunteer Portal" page title */
+
+@media (min-width: 200px) and (max-width: 768px) {
+	#block-pagetitle-2 {
+		font-size: 2em;
+		margin: auto auto auto auto;
+		line-height: 1em;
+	}
+	#block-views-block-calendar-usage-instructions-sidebar-block-1-4 {
+		margin: -1px -192px 1px -76px;
+		right: 220px;
+	}
+	#block-views-block-quick-links-aggregator-view-block-1-4 {
+		margin: 49px -192px 1px -76px;
+		right: 220px
+	}
+	#block-views-block-announcement-aggregator-block-1-6 {
+		background-color: white;
+		padding: 0px 0px 400px 0px;
+	}
+	
+	/* Partcipate main content block */
+	#block-views-block-participate-content-aggregator-block-1 {
+		background-color: white;
+		padding: 0px 0px 400px 0px;
+	}
+	
+	/* Learn main content block */
+	#block-views-block-learn-resources-aggregator-block-1-4 {
+		background-color: white;
+		padding: 0px 0px 400px 0px
+	}
+	
+	/* Sidebar for Learn page */
+	#block-views-block-quick-links-aggregator-view-block-learn {
+		background-color: white;
+		margin: 49px -233px 1px -76px;
+		right: 267px;
+		bottom: 127px;
+	}
+	#block-views-block-calendar-usage-instructions-learn{
+		margin: -1px -233px 1px -76px;
+		right: 267px;
+		top: 534px;
+	}
+	#block-views-block-administrative-content-aggregator-block-1 {
+		background-color: white;
+		padding: 0px 0px 400px 0px;
+	}
+	
+	/* Sidebar for Participate page */
+	#block-views-block-quick-links-aggregator-view-block-participate {
+		margin: 49px -192px 1px -76px;
+		right: 220px;
+	}
+	#block-views-block-calendar-usage-instructions-participate {
+		margin: -1px -192px 1px -76px;
+		right: 220px;
+	}
+	
+	/* Sidebar for Administrative page */
+	#block-views-block-quick-links-aggregator-view-block-administrative {
+		margin: 49px -192px 1px -76px;
+		right: 220px;
+	}
+	#block-views-block-calendar-usage-instructions-administrative {
+		margin: -1px -192px 1px -76px;
+		right: 220px;
+	}
+
+} 
+
+@media (min-width: 768px) {
+	#block-pagetitle-2 {
+		font-size: 1.6667em;
+		margin: 0em 19em 0em 0em;
+		/*right: 500px;*/
+	}
+	.sidebar .block {
+ 	   	background-color: white;
+    		padding: 10px 70px 10px 20px;
+    		margin: -360px 50px 60px 0px;
+	}
+	.block-views-block-announcement-aggregator-block-1 {
+		background-color: white;
+		padding: 4px 60px 435px 60px;
+		margin: 0px 0px 0px 0px;
+	}
+	#block-views-block-quick-links-aggregator-view-block-1-4 {
+		margin: -1041px -50px 60px 0px;
+		padding: 12px 14px 10px 20px;
+		bottom: 54px;
+	}
+	#block-views-block-calendar-usage-instructions-sidebar-block-1-4 {
+		margin: 0px -50px 60px 0px;
+		padding: 12px 46px 10px 20px;
+		top: 539px;
+	}
+	/* Participate Page Styles */
+	#block-views-block-quick-links-aggregator-view-block-participate {
+		margin: -803px 50px 60px 0px;
+		bottom: 0px;
+	}
+	#block-views-block-calendar-usage-instructions-participate {
+		top: 300px;
+	}
+
+	#block-views-block-announcement-aggregator-block-1-6 {
+		background: white;
+		padding: 4px 60px 435px 60px;
+		margin: 0px 0px 35px 0px;
+	}
+	#block-views-block-learn-resources-aggregator-block-1-4 {
+		background: white;
+		padding: 4px 60px 435px 60px;
+		margin: 0px 0px 35px 0px;
+	}
+	#block-views-block-quick-links-aggregator-view-block-learn {
+		bottom: 440px;
+	}
+	#block-views-block-calendar-usage-instructions-learn {
+		bottom: 140px;
+	}
+	#block-views-block-participate-content-aggregator-block-1 {
+		background: white;
+		padding: 4px 60px 435px 60px;
+		margin: 0px 0px 35px 0px;
+	}
+	/* Administrative page styles */
+	#block-views-block-administrative-content-aggregator-block-1 {
+		background: white;
+		padding: 4px 60px 435px 60px;
+		margin: 0px 0px 35px 0px;
+	}
+	#block-views-block-quick-links-aggregator-view-block-administrative {
+		bottom: 440px;
+	}
+	#block-views-block-calendar-usage-instructions-administrative {
+		bottom: 140px;
+	}
+	/*For the slideshow at the bottom of the front page*/
+	#block-views-block-jslideshow-block-1-2 {
+		top: 100px;
+	}
+} 
+
+.region-primary-menu .menu-item, body:not(:target) .region-primary-menu .menu-item {
+	float: left;
+	list-style: none;
+	padding: 0 28px;
+	margin: 0 1px;
+	width: auto;
+	height: auto;
+	overflow: visible;
+	font-size: 24px;
+	font-family: 'DTLParadox';
+}
+/*Modifications to the right-sidebar*/
+#sidebar-second {
+    width: 32%;
+    margin-left: 75%;
+    clear: none;
+    margin-top: -16%;
+}
+
+/*For modifications to the title height*/
+/*
+h1, .heading-a {
+    margin: 1.0em 0 0.5em;
+    font-weight: inherit;
+    font-size: 1.357em;
+    color: #000;
+}
+*/
+
+h3, .heading-c {
+    margin: 1.0em 0 0.5em;
+    font-weight: inherit;
+    font-size: 15pt;
+    font-style: italic;
+}
+
+body {
+    line-height: 1.5;
+    word-wrap: break-word;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 87.5%;
+}
+
+/* Banner at the top of the home page */
+#block-bannerattopofsite .content {
+	background-image: url('/themes/lwgvolunteer_style/css/images/rsz_1rsz_11volunteer_image.jpg');
+	height: 332px;
+	width: 954px;
+}
+
+/* Sidebar menu */
+.sidebar .block .content {
+    font-size: 12px;
+    line-height: 2.4;
+    font-family: 'DTLParadox';
+}
+
+.sidebar h2 {
+    font-size: 2.229em;
+    border-bottom: none;
+}
+
+/*.sidebar .block {
+	background-color: white;
+	padding: 10px 70px 10px 20px;
+	margin: -882px 50px 60px 0px;
+	position: relative;
+}*/
+
+/* media (max-width: 900px) and (min-width: 461px) */
+.region-primary-menu .menu {
+    margin: 0px 30px;
+    padding: 0;
+    text-align: center;
+}
+
+.responsive-menu-toggle-icon {
+    box-sizing: border-box;
+    display: block;
+    width: 102px;
+    height: 35px;
+    z-index: 4;
+    margin-top: 0;
+    position: relative;
+}
+
+
+.field--type-image img, .field--name-field-user-picture img {
+   height: auto;
+}
+
+/* Spacing between drop-down primary menu items */
+.region-primary-menu .menu a {
+	color: #333;
+	background: #ccc;
+	background: white;
+	float: none;
+	display: block;
+	text-decoration: none;
+	text-shadow: 0 1px #eee;
+	border-radius: 0px;
+	margin: -4px 2px;
+	padding: 0.9em 28px 0.9em 28px;
+}
+
+/* Responsive menu theme */
+.responsive-menu-toggle-icon span.label {
+	color: rgba(0,191,179,0.9);
+}
+
+.responsive-menu-toggle-icon::before, .responsive-menu-toggle-icon::after, .responsive-menu-toggle-icon span.icon {
+	background: rgba(0,191,179,0.9);
+}
+
+#volunteer_dropdown_item_1 {
+	padding: 0.9em 50px 0.9em 50px;
+}
+
+/* Centering the horizontal menu */
+#block-horizontalmenu-3 {
+	margin: 0px 0px 0px 600px
+}
+
+.main-content h2 {
+    margin-bottom: 2px;
+    position: relative;
+    right: 20px;
+    font-size: 3:.5rem;
+    line-height: 1.4;
+}

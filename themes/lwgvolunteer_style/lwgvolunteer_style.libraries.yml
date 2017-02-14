@@ -1,0 +1,8 @@
+global-styling:
+  version: 1.x
+  css:
+    theme:
+      css/lwgvolunteer_style.css: {}
+  js:
+     js/lwgvolunteer_style.js: {}
+
