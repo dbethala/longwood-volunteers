@@ -156,6 +156,9 @@
 		position: relative;
 		bottom: 350px;
 	}
+	#block-pagetitle {
+		float: left;
+	}
 }
 
 @media (min-width: 200px) and (max-width: 768px) {

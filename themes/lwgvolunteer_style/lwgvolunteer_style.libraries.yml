@@ -3,6 +3,7 @@ global-styling:
   css:
     theme:
       css/lwgvolunteer_style.css: {}
+      css/lwg_elements.css: {}
+   
   js:
-     js/lwgvolunteer_style.js: {}
-
+    js/lwgvolunteer_style.js: {}
