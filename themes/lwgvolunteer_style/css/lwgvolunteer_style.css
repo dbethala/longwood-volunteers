@@ -1,38 +1,91 @@
 /* Global Styles */
 
+/* Responsive menu label */
+#toggle-icon {
+	background: green;
+}
+
+/* Responsive menu icon */
+#toggle-icon > span.label {
+	color: green;
+}
+
+/* Quick Links Aggregator block */
 #block-views-block-quick-links-aggregator-view-block-1-4 {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);	
 }
 
+/* Quick Links sidebar heading */
 #block-views-block-quick-links-aggregator-view-block-1-4 > h2 {
 	border-bottom: none;	
 	font-size: 2.9rem;
 }
 
+/* Announcements Block */
 #block-views-block-aggregators-block-1 {
 	background: white;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+#block-views-block-aggregators-block-1 > h2 {
+	font-size: 2.9rem;
+}
 
+/* Participate BLock */
 #block-views-block-aggregators-block-2 {
 	background: white;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+#block-views-block-aggregators-block-2 > h2 {
+	font-size: 2.9rem;
+}
 
+/* Resources Block */
 #block-views-block-aggregators-block-3 {
 	background: white;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+#block-views-block-aggregators-block-3 > h2 {
+	font-size: 2.9rem;
+}
 
+/* Tools Block */
 #block-views-block-aggregators-block-4 {
 	background: white;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-
-.link {
-	border-bottom: none;
+#block-views-block-aggregators-block-4 > h2 {
+	font-size: 2.9rem;
 }
 
+/* Upcoming Events Block */
+#block-views-block-quick-links-aggregator-view-block-2 > h2 {
+	border-bottom: none;
+	font-size: 2.9rem;
+}
+
+#block-views-block-quick-links-aggregator-view-block-2 {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#block-footercolumn1 > div > div > div > h2:nth-child(1) > a {
+	color: black;
+	font-size: 1.5rem;
+}
+
+#block-footercolumn1 > div > div > div > h2:nth-child(2) > a {
+	color: black;
+	font-size: 1.5rem;
+}
+
+#block-footercolumn2 > div > div > div > h2:nth-child(1) > a {
+	color: black;
+	font-size: 1.5rem;
+}
+
+#block-footercolumn2 > div > div > div > h2:nth-child(2) > a {
+	color: black;
+	font-size: 1.5rem;
+}
 
 @media (min-width: 768px) {
 	#block-sitebranding > a {
@@ -59,7 +112,10 @@
 	#block-views-block-aggregators-block-1 > h2 {
 		position: relative;
 		bottom: 390px;
-		font-size: 2.9rem;
+	}
+	#block-views-block-aggregators-block-1 > div > div > div {
+		position: relative;
+		bottom: 350px;
 	}
 	#block-views-block-aggregators-block-2 {
 		background: white;
@@ -69,7 +125,10 @@
 	#block-views-block-aggregators-block-2 > h2 {
 		position: relative;
 		bottom: 390px;	
-		font-size: 2.9rem;
+	}
+	#block-views-block-aggregators-block-2 > div > div > div {
+		position: relative;
+		bottom: 350px;
 	}
 	#block-views-block-aggregators-block-3 {
 		background: white;
@@ -79,7 +138,10 @@
 	#block-views-block-aggregators-block-3 > h2 {
 		position: relative;
 		bottom: 390px;
-		font-size: 2.9rem;
+	}
+	#block-views-block-aggregators-block-3 > div > div > div {
+		position: relative;
+		bottom: 350px;
 	}
 	#block-views-block-aggregators-block-4 {
 		background: white;
@@ -89,6 +151,15 @@
 	#block-views-block-aggregators-block-4 > h2 {
 		position: relative;
 		bottom: 390px;
-		font-size: 2.9rem;
+	}
+	#block-views-block-aggregators-block-4 > div > div > div {
+		position: relative;
+		bottom: 350px;
+	}
+}
+
+@media (min-width: 200px) and (max-width: 768px) {
+	#block-views-block-footer-logo-block-1-5 > div > div > div > div > div > div > div > img {
+		max-width: 25%;
 	}
 }
