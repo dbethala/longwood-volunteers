@@ -188,5 +188,5 @@ AddEncoding gzip svgz
   RequestHeader unset Proxy
 </IfModule>
 
-  php_value post_max_size                   8M
-  php_value upload_max_filesize             8M
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
