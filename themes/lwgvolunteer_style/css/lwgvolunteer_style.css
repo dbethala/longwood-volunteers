@@ -131,6 +131,15 @@
 	max-width: 75%;
 }
 
+#block-views-block-quick-links-aggregator-view-block-7 {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#block-views-block-quick-links-aggregator-view-block-7 > h2 {
+	font-size: 2.9rem;
+	border-bottom: none;
+}
+
 @media (min-width: 768px) {
 	#block-sitebranding > a {
 		max-width: 30%;

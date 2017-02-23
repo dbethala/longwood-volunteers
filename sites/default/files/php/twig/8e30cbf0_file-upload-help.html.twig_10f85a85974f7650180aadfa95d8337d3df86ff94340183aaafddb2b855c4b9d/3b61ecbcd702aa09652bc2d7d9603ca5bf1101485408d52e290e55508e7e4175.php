@@ -1,7 +1,7 @@
 <?php
 
-/* modules/yamlform/templates/yamlform-help.html.twig */
-class __TwigTemplate_615abd5ec94ed577aa8ac29e588a1518fb49ae8510712f4a10502ec5866fc9a6 extends Twig_Template
+/* core/themes/classy/templates/content-edit/file-upload-help.html.twig */
+class __TwigTemplate_9f6de8a2cc7f874e404ac642090d6f79965d711d4ec7ab9140f11b39e25b6dbc extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -16,14 +16,14 @@ class __TwigTemplate_615abd5ec94ed577aa8ac29e588a1518fb49ae8510712f4a10502ec5866
     protected function doDisplay(array $context, array $blocks = array())
     {
         $tags = array();
-        $filters = array();
-        $functions = array("attach_library" => 17);
+        $filters = array("safe_join" => 12);
+        $functions = array();
 
         try {
             $this->env->getExtension('sandbox')->checkSecurity(
                 array(),
-                array(),
-                array('attach_library')
+                array('safe_join'),
+                array()
             );
         } catch (Twig_Sandbox_SecurityError $e) {
             $e->setTemplateFile($this->getTemplateName());
@@ -39,19 +39,15 @@ class __TwigTemplate_615abd5ec94ed577aa8ac29e588a1518fb49ae8510712f4a10502ec5866
             throw $e;
         }
 
-        // line 17
-        echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->escapeFilter($this->env, $this->env->getExtension('drupal_core')->attachLibrary("yamlform/yamlform.help"), "html", null, true));
-        echo "
-";
-        // line 18
-        echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->escapeFilter($this->env, (isset($context["help"]) ? $context["help"] : null), "html", null, true));
+        // line 12
+        echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->renderVar($this->env->getExtension('drupal_core')->safeJoin($this->env, (isset($context["descriptions"]) ? $context["descriptions"] : null), "<br />")));
         echo "
 ";
     }
 
     public function getTemplateName()
     {
-        return "modules/yamlform/templates/yamlform-help.html.twig";
+        return "core/themes/classy/templates/content-edit/file-upload-help.html.twig";
     }
 
     public function isTraitable()
@@ -61,25 +57,19 @@ class __TwigTemplate_615abd5ec94ed577aa8ac29e588a1518fb49ae8510712f4a10502ec5866
 
     public function getDebugInfo()
     {
-        return array (  47 => 18,  43 => 17,);
+        return array (  43 => 12,);
     }
 }
 /* {#*/
 /* /***/
 /*  * @file*/
-/*  * Theme implementation for form help.*/
+/*  * Theme override to display help text for file fields.*/
 /*  **/
-/*  * Available variables*/
-/*  * - title: Help title.*/
-/*  * - content: Help content.*/
-/*  * - youtube_id: YouTube video id.*/
-/*  * - help: A render array content help title and content inside a details element.*/
+/*  * Available variables:*/
+/*  * - descriptions: Lines of help text for uploading a file.*/
 /*  **/
-/*  * @see template_preprocess_yamlform_help()*/
-/*  **/
-/*  * @ingroup themeable*/
+/*  * @see template_preprocess_file_upload_help()*/
 /*  *//* */
 /* #}*/
-/* {{ attach_library('yamlform/yamlform.help') }}*/
-/* {{ help }}*/
+/* {{ descriptions|safe_join('<br />') }}*/
 /* */

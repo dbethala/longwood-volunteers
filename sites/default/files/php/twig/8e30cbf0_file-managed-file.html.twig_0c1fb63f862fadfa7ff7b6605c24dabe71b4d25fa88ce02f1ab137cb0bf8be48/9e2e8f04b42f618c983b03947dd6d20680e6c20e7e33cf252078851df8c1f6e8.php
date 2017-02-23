@@ -1,7 +1,7 @@
 <?php
 
-/* core/themes/classy/templates/content-edit/filter-guidelines.html.twig */
-class __TwigTemplate_6845a304daec034bfa981bb32bacb17cb462876ca8817287b998ba29916f6a89 extends Twig_Template
+/* core/themes/classy/templates/content-edit/file-managed-file.html.twig */
+class __TwigTemplate_5103de17a872f4756421038ee52b93c7d91a31671d8c720eee98e49257d105dc extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -15,15 +15,15 @@ class __TwigTemplate_6845a304daec034bfa981bb32bacb17cb462876ca8817287b998ba29916
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $tags = array("set" => 21);
+        $tags = array("set" => 15);
         $filters = array();
-        $functions = array();
+        $functions = array("attach_library" => 13);
 
         try {
             $this->env->getExtension('sandbox')->checkSecurity(
                 array('set'),
                 array(),
-                array()
+                array('attach_library')
             );
         } catch (Twig_Sandbox_SecurityError $e) {
             $e->setTemplateFile($this->getTemplateName());
@@ -39,20 +39,19 @@ class __TwigTemplate_6845a304daec034bfa981bb32bacb17cb462876ca8817287b998ba29916
             throw $e;
         }
 
-        // line 21
-        $context["classes"] = array(0 => "filter-guidelines-item", 1 => ("filter-guidelines-" . $this->getAttribute(        // line 23
-(isset($context["format"]) ? $context["format"] : null), "id", array())));
-        // line 26
+        // line 13
+        echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->escapeFilter($this->env, $this->env->getExtension('drupal_core')->attachLibrary("classy/file"), "html", null, true));
+        echo "
+";
+        // line 15
+        $context["classes"] = array(0 => "js-form-managed-file", 1 => "form-managed-file");
+        // line 20
         echo "<div";
         echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->escapeFilter($this->env, $this->getAttribute((isset($context["attributes"]) ? $context["attributes"] : null), "addClass", array(0 => (isset($context["classes"]) ? $context["classes"] : null)), "method"), "html", null, true));
         echo ">
-  <h4 class=\"label\">";
-        // line 27
-        echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->escapeFilter($this->env, $this->getAttribute((isset($context["format"]) ? $context["format"] : null), "label", array()), "html", null, true));
-        echo "</h4>
   ";
-        // line 28
-        echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->escapeFilter($this->env, (isset($context["tips"]) ? $context["tips"] : null), "html", null, true));
+        // line 21
+        echo $this->env->getExtension('sandbox')->ensureToStringAllowed($this->env->getExtension('drupal_core')->escapeFilter($this->env, (isset($context["element"]) ? $context["element"] : null), "html", null, true));
         echo "
 </div>
 ";
@@ -60,7 +59,7 @@ class __TwigTemplate_6845a304daec034bfa981bb32bacb17cb462876ca8817287b998ba29916
 
     public function getTemplateName()
     {
-        return "core/themes/classy/templates/content-edit/filter-guidelines.html.twig";
+        return "core/themes/classy/templates/content-edit/file-managed-file.html.twig";
     }
 
     public function isTraitable()
@@ -70,36 +69,29 @@ class __TwigTemplate_6845a304daec034bfa981bb32bacb17cb462876ca8817287b998ba29916
 
     public function getDebugInfo()
     {
-        return array (  55 => 28,  51 => 27,  46 => 26,  44 => 23,  43 => 21,);
+        return array (  54 => 21,  49 => 20,  47 => 15,  43 => 13,);
     }
 }
 /* {#*/
 /* /***/
 /*  * @file*/
-/*  * Theme override for guidelines for a text format.*/
+/*  * Theme override to display a file form widget.*/
 /*  **/
 /*  * Available variables:*/
-/*  * - format: Contains information about the current text format, including the*/
-/*  *   following:*/
-/*  *   - name: The name of the text format, potentially unsafe and needs to be*/
-/*  *     escaped.*/
-/*  *   - format: The machine name of the text format, e.g. 'basic_html'.*/
+/*  * - element: Form element for the file upload.*/
 /*  * - attributes: HTML attributes for the containing element.*/
-/*  * - tips: Descriptions and a CSS ID in the form of 'module-name/filter-id'*/
-/*  *   (only used when 'long' is TRUE) for each filter in one or more text*/
-/*  *   formats.*/
 /*  **/
-/*  * @see template_preprocess_filter_tips()*/
+/*  * @see template_preprocess_file_managed_file()*/
 /*  *//* */
 /* #}*/
+/* {{ attach_library('classy/file') }}*/
 /* {%*/
 /*   set classes = [*/
-/*     'filter-guidelines-item',*/
-/*     'filter-guidelines-' ~ format.id,*/
+/*     'js-form-managed-file',*/
+/*     'form-managed-file',*/
 /*   ]*/
 /* %}*/
 /* <div{{ attributes.addClass(classes) }}>*/
-/*   <h4 class="label">{{ format.label }}</h4>*/
-/*   {{ tips }}*/
+/*   {{ element }}*/
 /* </div>*/
 /* */
