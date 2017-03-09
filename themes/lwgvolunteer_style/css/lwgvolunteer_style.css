@@ -51,6 +51,15 @@
 	margin: 0 0px 0.5em;
 }
 
+#block-views-block-aggregators-block-5 {
+	background: white;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#block-views-block-aggregators-block-5 > h2 {
+	font-size: 2.9rem;
+}
+
 /* Tools Block */
 #block-views-block-aggregators-block-4 {
 	background: white;
@@ -149,6 +158,7 @@
 		font-size: 3.5rem;
 		position: relative;
 		right: 350px;
+		margin-top: -87px;
 	}
 	#block-horizontalmenu-3 {
 		position: relative;
