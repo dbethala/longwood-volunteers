@@ -2,7 +2,6 @@
 
 namespace Drupal\fontyourface\Entity;
 
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
@@ -53,13 +52,6 @@ use Drupal\fontyourface\FontInterface;
  */
 class Font extends ContentEntityBase implements FontInterface {
   use EntityChangedTrait;
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
-    parent::preCreate($storage_controller, $values);
-  }
 
   /**
    * {@inheritdoc}

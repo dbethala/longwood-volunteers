@@ -1,6 +1,35 @@
 /* Global Styles */
 
 /* Responsive menu label */
+
+h2 {
+	color: black;
+	padding: 20px 20px 20px 20px;
+}
+
+.site-footer .content a {
+	color: black;
+	font-size: 1.4rem;
+	font-weight: 900;
+}
+
+.featured-top {
+	background: white;
+}
+
+.sidebar-aggregator {
+	padding: 20px 20px 20px 20px;
+	background: white;
+}
+
+.aggregator {
+	padding: 20px 20px 20px 20px;
+}
+
+.views-element-container {
+	background: white;
+}
+
 #toggle-icon {
 	background: green;
 }
@@ -13,6 +42,11 @@
 /* Quick Links Aggregator block */
 #block-views-block-quick-links-aggregator-view-block-1-4 {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);	
+}
+
+#content > section {
+	position: relative;
+	bottom: 45px;
 }
 
 /* Quick Links sidebar heading */
@@ -78,9 +112,12 @@
 
 #block-views-block-quick-links-aggregator-view-block-2 {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	position: relative;
+	top: 30px;
 }
 
 #block-views-block-quick-links-aggregator-view-block-3 {
+	background: white;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
@@ -125,11 +162,13 @@
 #block-views-block-quick-links-aggregator-view-block-4 > h2 {
 	border-bottom: none;
 	font-size: 2.9rem;
+	padding: 5px 20px 20px 20px;
 }
 
 #block-views-block-quick-links-aggregator-view-block-6 > h2 {
 	font-size: 2.9rem;
-	border-bottom: none
+	border-bottom: none;
+	padding: 5px 20px 20px 20px;
 }
 
 #block-views-block-quick-links-aggregator-view-block-6 {
@@ -159,6 +198,17 @@
 	left: 20px;
 }
 
+.site-footer .content a:hover {
+	color: #37bdff;
+}
+
+.footer-text-block {
+	color: black;
+	font-weight: 900;
+	font-size: 1.4rem;
+}
+
+
 @media (min-width: 768px) {
 	#block-sitebranding > a {
 		max-width: 30%;
@@ -167,7 +217,7 @@
 	#block-pagetitle-2 > div > h1 {
 		font-size: 3.5rem;
 		position: relative;
-		right: 350px;
+		right: 597px;
 		margin-top: -12px;
 	}
 	#block-horizontalmenu-3 {
@@ -181,6 +231,8 @@
 		background: white;
 		padding: 5px 20px 20px 20px;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		position: relative;
+		top: 43px;
 	}
 	#block-views-block-aggregators-block-2 {
 		background: white;
@@ -201,16 +253,34 @@
 		padding: 5px 20px 20px 20px;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		position: relative;
-		top: 10px;
+		top: 50px;
 	}
 	#block-pagetitle {
 		float: left;
+	}
+	#sidebar-second {
+		bottom: 10px;
+	}
+
+	/*For the second footer text block*/
+	#block-footercolumn2 {
+		position: relative;
+		left: 76px;
+	}
+	/*For the first footer text block*/
+	#block-footercolumn1 {
+		position: relative;
+		right: 20px
 	}
 }
 
 @media (min-width: 200px) and (max-width: 768px) {
 	#block-views-block-footer-logo-block-1-5 > div > div > div > div > div > div > div > img {
 		max-width: 25%;
+	}
+
+	#block-sitebranding {
+		max-width: 50%;
 	}
 
 	.aggregator {
@@ -229,4 +299,7 @@
 	#block-views-block-aggregators-block-4 > h2 {
 		margin: 0 20px 0.5em;
 	}
+	#block-sitebranding > a 
+		max-width: 35%
+	{}
 }

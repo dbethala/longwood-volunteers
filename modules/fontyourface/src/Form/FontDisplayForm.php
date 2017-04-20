@@ -21,23 +21,23 @@ class FontDisplayForm extends EntityForm {
     $form = parent::form($form, $form_state);
 
     $font_display = $this->entity;
-    $form['label'] = array(
+    $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#maxlength' => 255,
       '#default_value' => $font_display->label(),
       '#description' => $this->t("Label for the Font display."),
       '#required' => TRUE,
-    );
+    ];
 
-    $form['id'] = array(
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $font_display->id(),
-      '#machine_name' => array(
+      '#machine_name' => [
         'exists' => '\Drupal\fontyourface\Entity\FontDisplay::load',
-      ),
+      ],
       '#disabled' => !$font_display->isNew(),
-    );
+    ];
 
     /* You will need additional form elements for your custom properties. */
 
@@ -205,7 +205,7 @@ class FontDisplayForm extends EntityForm {
   /**
    * Return string that maps to selector.
    *
-   * @param FontDisplayInterface $font_display
+   * @param \Drupal\fontyourface\FontDisplayInterface $font_display
    *   Current Font Display entity.
    *
    * @return string
