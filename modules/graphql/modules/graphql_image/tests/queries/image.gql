@@ -1,0 +1,24 @@
+query ($path: String!) {
+  route:route(path: $path) {
+    node:entity {
+      image {
+        alt
+        title
+        originalImage {
+          fileSize
+          mimeType
+          width
+          height
+          url
+        }
+        thumbnailImage {
+          fileSize
+          mimeType
+          width
+          height
+          url
+        }
+      }
+    }
+  }
+}
