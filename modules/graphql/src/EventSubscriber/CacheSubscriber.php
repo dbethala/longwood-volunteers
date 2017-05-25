@@ -10,13 +10,14 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\PageCache\RequestPolicyInterface;
 use Drupal\Core\PageCache\ResponsePolicyInterface;
-use Drupal\Core\Routing\ResettableStackedRouteMatchInterface;
+use Drupal\Core\Routing\StackedRouteMatchInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Youshido\GraphQL\Schema\AbstractSchema;
 
 /**
  * Disables any display variant on the explorer page.
@@ -98,7 +99,7 @@ class CacheSubscriber implements EventSubscriberInterface {
    *   A policy rule determining the cacheability of a request.
    * @param \Drupal\Core\PageCache\ResponsePolicyInterface $responsePolicy
    *   A policy rule determining the cacheability of the response.
-   * @param \Drupal\Core\Routing\ResettableStackedRouteMatchInterface $routeMatch
+   * @param \Drupal\Core\Routing\StackedRouteMatchInterface $routeMatch
    *   The current route match.
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   The request stack.
@@ -112,7 +113,7 @@ class CacheSubscriber implements EventSubscriberInterface {
   public function __construct(
     RequestPolicyInterface $requestPolicy,
     ResponsePolicyInterface $responsePolicy,
-    ResettableStackedRouteMatchInterface $routeMatch,
+    StackedRouteMatchInterface $routeMatch,
     RequestStack $requestStack,
     CacheBackendInterface $responseCache,
     CacheBackendInterface $metadataCache,
@@ -136,13 +137,10 @@ class CacheSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function onRouteMatch(GetResponseEvent $event) {
-    if ($this->routeMatch->getCurrentRouteMatch()->getRouteName() !== 'graphql.request') {
-      return;
-    }
-    
-    // We do not need to cache batch requests locally.
     $request = $event->getRequest();
-    if (empty($request->attributes->get('query'))) {
+    $routeMatch = $this->routeMatch->getRouteMatchFromRequest($request);
+
+    if ($routeMatch->getRouteName() !== 'graphql.request') {
       return;
     }
 
@@ -164,7 +162,7 @@ class CacheSubscriber implements EventSubscriberInterface {
         $event->setResponse($response);
       }
     }
-  }
+   }
 
   /**
    * Stores a response in case of a cache miss if applicable.
@@ -173,7 +171,10 @@ class CacheSubscriber implements EventSubscriberInterface {
    *   The event to process.;
    */
   public function onResponse(FilterResponseEvent $event) {
-    if ($this->routeMatch->getCurrentRouteMatch()->getRouteName() !== 'graphql.request') {
+    $request = $event->getRequest();
+    $routeMatch = $this->routeMatch->getRouteMatchFromRequest($request);
+
+    if ($routeMatch->getRouteName() !== 'graphql.request') {
       return;
     }
 
@@ -184,12 +185,6 @@ class CacheSubscriber implements EventSubscriberInterface {
 
     // There's no work left to be done if this is a cache hit.
     if ($response->headers->get(self::HEADER) === 'HIT') {
-      return;
-    }
-
-    // We do not need to cache batch requests locally.
-    $request = $event->getRequest();
-    if (empty($request->attributes->get('query'))) {
       return;
     }
 
@@ -217,14 +212,13 @@ class CacheSubscriber implements EventSubscriberInterface {
     }
 
     // Merge the global cache metadata with the response cache metadata.
-    $metadata = new CacheableMetadata();
-    $metadata->addCacheableDependency($this->metadata);
-    $metadata->addCacheableDependency($response->getCacheableMetadata());
+    $response->addCacheableDependency($this->metadata);
 
+    $metadata = $response->getCacheableMetadata();
     $tags = $metadata->getCacheTags();
     $expire = $this->maxAgeToExpire($metadata->getCacheMaxAge());
 
-    // Write the cache entry for the cache metadata. This one uses the
+    // Write the cache entry for the cache metadata.
     $ccid = $this->getCacheIdentifier($this->metadata);
     $this->metadataCache->set($ccid, $metadata, $expire, $tags);
 
@@ -264,7 +258,7 @@ class CacheSubscriber implements EventSubscriberInterface {
   protected function getCacheIdentifier(CacheableDependencyInterface $metadata) {
     $tokens = $metadata->getCacheContexts();
     $keys = $this->contextsManager->convertTokensToKeys($tokens)->getKeys();
-    return implode(':', $keys);
+    return implode(':', array_merge(['graphql'], array_values($keys)));
   }
 
   /**
