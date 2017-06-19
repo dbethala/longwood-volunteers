@@ -366,6 +366,7 @@ class SuperfishBlock extends SystemMenuBlock {
     ];
     $description = sprintf('%s <em>(%s: %s)</em><br>%s: <em> - %s - </em>',
       $this->t('By default the first item in the &lt;select&gt; element will be the name of the parent menu or the title of this block, you can change this by setting a custom title.'),
+      $this->t('Default'),
       $this->t('empty'),
       $this->t('Example'),
       $this->t('Main Menu')
