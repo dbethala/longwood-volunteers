@@ -26,7 +26,7 @@ abstract class EnumPluginBase extends AbstractEnumType implements GraphQLPluginI
    * {@inheritdoc}
    */
   public function getValues() {
-    $this->config->get('values');
+    return $this->config->get('values');
   }
 
   /**
@@ -34,6 +34,7 @@ abstract class EnumPluginBase extends AbstractEnumType implements GraphQLPluginI
    */
   public function buildConfig(GraphQLSchemaManagerInterface $schemaManager) {
     $this->config = new EnumTypeConfig([
+      'name' => $this->getPluginDefinition()['name'],
       'values' => $this->buildValues($schemaManager),
     ]);
   }

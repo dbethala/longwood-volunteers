@@ -1,0 +1,43 @@
+@media (min-width: 768px) {
+	
+	.main-content h2 {
+		font-size: 2.85rem;
+		margin-left: 1.5em;
+	}
+	
+	.sidebar h2 {
+		font-size: 2.85rem;
+	}
+	
+	.field-content {
+		color: black;
+		font-size: 1.40rem;
+	}
+}
+
+@media (max-width: 767px) {
+	
+	.main-content h2 {
+		font-size: 1.79rem;
+		margin-left: 1.5em;
+	}
+	.sidebar h2 {
+		font-size: 1.79rem;
+		margin-left: 1.5em
+	}
+}
+
+.main-content h2 {
+	color: black;
+	margin-left: 1.5em
+}
+
+.sidebar h2 {
+	color: black;	
+	border-bottom: none;
+}
+
+a {
+	color: #00b388
+}
+

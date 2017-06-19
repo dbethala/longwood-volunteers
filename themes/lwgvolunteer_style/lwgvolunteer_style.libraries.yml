@@ -4,7 +4,8 @@ global-styling:
     theme:
       css/lwgvolunteer_style.css: {}
       css/lwg_elements.css: {}
-      css/longwood_volunteer.css: []
+      css/fonts.css: {}
    
   js:
-    js/lwgvolunteer_style.js: {}
+    js/sliderHeight.js: {}
+    js/collapse.js: {}

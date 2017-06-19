@@ -10,11 +10,15 @@ function assignInlineStyles () {
 
 }
 
-
 //Changes the title on the front page to say "Volunteer Portal"
 function persistPageTitle () {
  // document.getElementsByClassName("js-quickedit-page-title title page-title")[0].innerHTML='Volunteer Portal';
-	document.getElementsByClassName("title page-title")[0].innerHTML='Volunteer Portal';
+	if (window.location.href = 'http://volunteer.longwoodgardens.org/') {
+		console.log(window.location.href);
+		document.querySelector('#block-pagetitle-2 > div > h1').innerText='Welcome to the Volunteer Hub';
+	} else {
+		document.querySelector('#block-pagetitle-2 > div > h1').innerText='Volunteer Hub';
+	}
 }
 
 
@@ -56,9 +60,15 @@ function main () {
 	
 	
 	assignInlineStyles();
-	persistPageTitle();
+	//persistPageTitle();
 	//setAnnouncementBlockStyle();
 	//setResourceBlockStyle();
 }
 
-persistPageTitle();
+//document.addEventListener('DOMContentLoaded', persistPageTitle());
+
+document.addEventListener('DOMContentLoaded', function() {
+	var wordmark = document.querySelector('#block-sitebranding > a');
+	wordmark.removeAttribute('href');
+	wordmark.setAttribute('href', 'https://longwoodgardens.org/');	
+});

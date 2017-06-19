@@ -7,7 +7,6 @@ base theme: bartik
 
 libraries:
 - lwgvolunteer_style/global-styling
-- longwood_volunteer/global-styling
 
 regions:
   header: Header

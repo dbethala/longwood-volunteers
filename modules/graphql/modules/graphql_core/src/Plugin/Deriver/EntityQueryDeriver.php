@@ -30,30 +30,24 @@ class EntityQueryDeriver extends DeriverBase implements ContainerDeriverInterfac
   protected $typedDataManager;
 
   /**
-   * The graphql interface plugin manager.
-   *
-   * @var \Drupal\Component\Plugin\PluginManagerInterface
-   */
-  protected $interfaceManager;
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, $basePluginId) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('typed_data_manager'),
-      $container->get('graphql_core.interface_manager')
+      $container->get('typed_data_manager')
     );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, TypedDataManager $typedDataManager, PluginManagerInterface $interfaceManager) {
+  public function __construct(
+    EntityTypeManagerInterface $entityTypeManager,
+    TypedDataManager $typedDataManager
+  ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->typedDataManager = $typedDataManager;
-    $this->interfaceManager = $interfaceManager;
   }
 
   /**
@@ -71,33 +65,19 @@ class EntityQueryDeriver extends DeriverBase implements ContainerDeriverInterfac
         $definition = $this->typedDataManager->createDataDefinition("entity:$id");
         $properties = $definition->getPropertyDefinitions();
 
-        // Add all queryable properties as args.
-        foreach ($properties as $key => $property) {
-          if ($property instanceof BaseFieldDefinition && $property->isQueryable()) {
-            $argName = graphql_core_propcase($key);
+        $queryable_properties = array_filter($properties, function ($property) {
+          return $property instanceof BaseFieldDefinition && $property->isQueryable();
+        });
 
-            // Some args are predefined (e.g. 'offset' and 'limit'). Don't
-            // override those.
-            if (isset($derivative['arguments'][$argName])) {
-              continue;
-            }
-
-            // Some field types don't have a main property.
-            if (!$mainProperty = $property->getMainPropertyName()) {
-              continue;
-            }
-
-            $mainPropertyDataType = $property->getPropertyDefinition($mainProperty)->getDataType();
-
-            $derivative['arguments'][$argName] = [
-              'multi' => FALSE,
-              'nullable' => TRUE,
-              'data_type' => $mainPropertyDataType,
-            ];
-          }
+        if ($queryable_properties) {
+          $derivative['arguments']['filter'] = [
+            'multi' => FALSE,
+            'nullable' => TRUE,
+            'type' => graphql_core_camelcase([$id, 'query', 'filter', 'input']),
+          ];
         }
 
-        $this->derivatives["entity:$id"] = $derivative;
+        $this->derivatives[$id] = $derivative;
       }
     }
 

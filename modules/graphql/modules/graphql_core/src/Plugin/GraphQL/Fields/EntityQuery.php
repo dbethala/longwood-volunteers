@@ -4,10 +4,8 @@ namespace Drupal\graphql_core\Plugin\GraphQL\Fields;
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\graphql\GraphQL\CacheableValue;
 use Drupal\graphql_core\GraphQL\FieldPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Youshido\GraphQL\Execution\ResolveInfo;
@@ -92,8 +90,10 @@ class EntityQuery extends FieldPluginBase implements ContainerFactoryPluginInter
     $query->range($args['offset'], $args['limit']);
     $query->sort($type->getKey('id'));
 
-    foreach (array_diff_key($args, array_flip(['offset', 'limit'])) as $key => $arg) {
-      $query->condition($key, $arg);
+    if (array_key_exists('filter', $args) && $args['filter']) {
+      foreach ($args['filter'] as $key => $arg) {
+        $query->condition($key, $arg);
+      }
     }
 
     yield $query;
