@@ -9,6 +9,11 @@
 }
 */
 
+a:hover {
+	color: black;
+	border-bottom-style: none;
+}
+
 .views-row {
 	margin-bottom: 20px;
 }
@@ -41,12 +46,13 @@
 }
 
 #toggle-icon {
-	background: green;
+	background: #00b388;
 }
 
 /* Responsive menu icon */
 #toggle-icon > span.label {
-	color: green;
+	color: #00b388;
+	margin-left: 5px;
 }
 
 /* Quick Links Aggregator block */
@@ -182,6 +188,9 @@
 	#block-sitebranding > a {
 		max-width: 30%;
 	}
+	.featured-top {
+		padding: 1px 10px 0px;
+	}
 
 	#block-pagetitle-2 > div > h1 {
 		font-size: 3.5rem;
@@ -192,6 +201,8 @@
 	#block-horizontalmenu-3 {
 		position: relative;
 		float: right;
+		bottom: 90px;
+		left: 226px;
 	}
 	#block-horizontalmenu-3 > div > nav {
 		font-size: 1.4rem;

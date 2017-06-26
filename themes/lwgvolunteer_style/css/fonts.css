@@ -25,6 +25,9 @@
 		font-size: 1.79rem;
 		margin-left: 1.5em
 	}
+	.site-footer .content a {
+		font-size: 1.1rem;
+	}
 }
 
 .main-content h2 {
