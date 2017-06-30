@@ -3,15 +3,15 @@ services:
   # Plugins.
 
   plugin.manager.webform.element:
-    class: Drupal\webform\WebformElementManager
+    class: Drupal\webform\Plugin\WebformElementManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory', '@plugin.manager.element_info']
 
   plugin.manager.webform.handler:
-    class: Drupal\webform\WebformHandlerManager
+    class: Drupal\webform\Plugin\WebformHandlerManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory']
 
   plugin.manager.webform.exporter:
-    class: Drupal\webform\WebformExporterManager
+    class: Drupal\webform\Plugin\WebformExporterManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory']
 
   # Logger.
@@ -72,10 +72,18 @@ services:
   # Breadcrumb builder.
 
   webform.breadcrumb:
-    class: Drupal\webform\BreadCrumb\WebformBreadcrumbBuilder
+    class: Drupal\webform\Breadcrumb\WebformBreadcrumbBuilder
     arguments: ['@module_handler', '@webform.request', '@string_translation']
     tags:
       - { name: breadcrumb_builder, priority: 1002 }
+
+  # Event subscriber.
+
+  webform.event_subscriber:
+    class: Drupal\webform\EventSubscriber\WebformSubscriber
+    arguments: ['@current_user', '@config.factory']
+    tags:
+      - { name: event_subscriber }
 
   # Route subscriber.
 

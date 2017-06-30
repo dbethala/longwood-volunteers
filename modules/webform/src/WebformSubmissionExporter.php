@@ -9,10 +9,13 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\SubformState;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\webform\Entity\WebformSubmission;
+use Drupal\webform\Plugin\WebformElementManagerInterface;
+use Drupal\webform\Plugin\WebformExporterManagerInterface;
 
 /**
  * Webform submission exporter.
@@ -52,14 +55,14 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
   /**
    * Webform element manager.
    *
-   * @var \Drupal\webform\WebformElementManagerInterface
+   * @var \Drupal\webform\Plugin\WebformElementManagerInterface
    */
   protected $elementManager;
 
   /**
    * Results exporter manager.
    *
-   * @var \Drupal\webform\WebformExporterManagerInterface
+   * @var \Drupal\webform\Plugin\WebformExporterManagerInterface
    */
   protected $exporterManager;
 
@@ -80,7 +83,7 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
   /**
    * The results exporter.
    *
-   * @var \Drupal\webform\WebformExporterInterface
+   * @var \Drupal\webform\Plugin\WebformExporterInterface
    */
   protected $exporter;
 
@@ -109,9 +112,9 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
    *   The entity query factory.
    * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
    *   The stream wrapper manager.
-   * @param \Drupal\webform\WebformElementManagerInterface $element_manager
+   * @param \Drupal\webform\Plugin\WebformElementManagerInterface $element_manager
    *   The webform element manager.
-   * @param \Drupal\webform\WebformExporterManagerInterface $exporter_manager
+   * @param \Drupal\webform\Plugin\WebformExporterManagerInterface $exporter_manager
    *   The results exporter manager.
    */
   public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, QueryFactory $query_factory, StreamWrapperManagerInterface $stream_wrapper_manager, WebformElementManagerInterface $element_manager, WebformExporterManagerInterface $exporter_manager) {
@@ -314,11 +317,12 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
       '#default_value' => $export_options['exporter'],
       // Below .js-webform-exporter is used for exporter configuration form
       // #states.
-      // @see \Drupal\webform\WebformExporterBase::buildConfigurationForm
+      // @see \Drupal\webform\Plugin\WebformExporterBase::buildConfigurationForm
       '#attributes' => ['class' => ['js-webform-exporter']],
     ];
     foreach ($exporter_plugins as $plugin_id => $exporter) {
-      $form['export']['format'] = $exporter->buildConfigurationForm($form['export']['format'], $form_state);
+      $subform_state = SubformState::createForSubform($form['export']['format'], $form, $form_state);
+      $form['export']['format'] = $exporter->buildConfigurationForm($form['export']['format'], $subform_state);
     }
 
     // Element.
@@ -407,7 +411,8 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
     $element_handlers = $this->elementManager->getInstances();
     foreach ($element_handlers as $element_type => $element_handler) {
       if (empty($element_types) || isset($element_types[$element_type])) {
-        $element_handler->buildExportOptionsForm($form['export']['elements'], $form_state, $export_options);
+        $subform_state = SubformState::createForSubform($form['export']['elements'], $form, $form_state);
+        $element_handler->buildExportOptionsForm($form['export']['elements'], $subform_state, $export_options);
       }
     }
 
@@ -564,7 +569,7 @@ class WebformSubmissionExporter implements WebformSubmissionExporterInterface {
         'completed' => $this->t('Completed submissions only'),
         'draft' => $this->t('Drafts only'),
       ],
-      '#access' => ($webform->getSetting('draft') != WebformInterface::DRAFT_ENABLED_NONE),
+      '#access' => ($webform->getSetting('draft') != WebformInterface::DRAFT_NONE),
     ];
   }
 

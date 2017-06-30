@@ -9,6 +9,62 @@
 }
 */
 
+#content > section > div > div:nth-child(2) > div > div.view-empty > ul > li {
+	display: none;
+}
+#block-views-block-footer-text-block-1 {
+	border-radius: none;
+	box-shadow: none;
+}
+
+#block-views-block-footer-logo-block-1-5 {
+	box-shadow: none;
+	border-radius: none;
+}
+
+#block-views-block-footer-text-block-2 {
+	box-shadow: none;
+	border-radius: none;
+}
+.block-views {
+	border-radius: 35px;
+	margin-bottom: 15px;
+	background: white;
+}
+
+.views-element-container{
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#block-views-block-footer-text-block-2 {
+	border-radius: none;
+}
+
+#block-views-block-slick-carousel-block-1{
+	border-radius: none;
+	box-shadow: none;
+}
+
+#block-views-block-participate-banner-block-1 {
+	box-shadow: none;
+}
+
+#block-views-block-jslideshow-block-3 {
+	box-shadow: none;
+}
+
+#block-views-block-jslideshow-block-4 {
+	box-shadow: none;
+}
+
+.is-active {
+	border-radius: 70px;
+}
+
+#content > section > div > div:nth-child(2) > div > div.view-empty > ul > li {
+	display: none:;
+}
+
 a:hover {
 	color: black;
 	border-bottom-style: none;
@@ -62,7 +118,7 @@ a:hover {
 
 #content > section {
 	position: relative;
-	bottom: 45px;
+	
 }
 
 /* Announcements Block */
@@ -180,6 +236,11 @@ a:hover {
 	height: 581px;
 }
 
+#block-views-block-aggregators-block-8 {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	margin-top: 15px;
+}
+
 
 @media (min-width: 768px) {
 	#main-wrapper {
@@ -212,7 +273,6 @@ a:hover {
 		padding: 5px 20px 20px 20px;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		position: relative;
-		top: 43px;
 	}
 	#block-views-block-aggregators-block-2 {
 		background: white;
@@ -233,7 +293,6 @@ a:hover {
 		padding: 5px 20px 20px 20px;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		position: relative;
-		top: 50px;
 	}
 	#block-pagetitle {
 		float: left;
@@ -282,5 +341,16 @@ a:hover {
 		position: relative;
 		top: 30px;
 	}
-	
+	#block-views-block-aggregators-block-6 {
+		margin-bottom: 15px;
+	}
+	#block-views-block-quick-links-aggregator-view-block-4 {
+		margin-bottom: 15px;
+	}
+	#block-views-block-quick-links-aggregator-view-block-6 {
+		margin-bottom: 15px;
+	}
+	#block-views-block-aggregators-block-5 {
+		margin-bottom: 15px;
+	}	
 }
