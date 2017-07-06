@@ -2,7 +2,7 @@
 	
 	.main-content h2 {
 		font-size: 2.85rem;
-		margin-left: 1.5em;
+		margin-left: 10px;
 	}
 	
 	.sidebar h2 {
@@ -19,20 +19,24 @@
 	
 	.main-content h2 {
 		font-size: 1.79rem;
-		margin-left: 1.5em;
+		margin-left: 25px;
 	}
 	.sidebar h2 {
 		font-size: 1.79rem;
-		margin-left: 1.5em
 	}
 	.site-footer .content a {
 		font-size: 1.1rem;
+	}
+	.sidebar .block {
+		font-size: 1rem;
+	}
+	body {
+		font-size: 1rem;
 	}
 }
 
 .main-content h2 {
 	color: black;
-	margin-left: 1.5em
 }
 
 .sidebar h2 {

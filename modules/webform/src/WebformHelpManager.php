@@ -288,7 +288,7 @@ SUGGESTIONS
       'url' => Url::fromUri('https://www.drupal.org/association/campaign/value-2017'),
     ];
     $links['documentation'] = [
-      'title' => $this->t('Read Webform Documentaion'),
+      'title' => $this->t('Read Webform Documentation'),
       'url' => Url::fromUri('https://www.drupal.org/docs/8/modules/webform'),
     ];
     if ($this->configFactory->get('webform.settings')->get('ui.video_display') == 'dialog') {
@@ -1355,6 +1355,15 @@ SUGGESTIONS
         'content' => $this->t("The Export (form) page allows developers to quickly export a single webform's configuration file.") . ' ' .
         $this->t('If you run into any issues with a webform, you can also attach the below configuration (without any personal information) to a new ticket in the Webform module\'s <a href=":href">issue queue</a>.', [':href' => 'https://www.drupal.org/project/issues/webform']),
         'video_id' => 'help',
+      ];
+      // Webform Schema.
+      $help['webform_schema'] = [
+        'routes' => [
+          // @see /admin/structure/webform/manage/{webform}/schema
+          'entity.webform.schema_form',
+        ],
+        'title' => $this->t('Webform schema'),
+        'content' => $this->t("The Webform schema page displays an overview of a webform's elements and specified data types, which can be used to map webform submissions to a remote post API."),
       ];
     }
 
