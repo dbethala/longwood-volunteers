@@ -33,6 +33,9 @@
 	body {
 		font-size: 1rem;
 	}
+	.field-content {
+		font-size: 1rem;
+	}
 }
 
 .main-content h2 {
@@ -47,4 +50,17 @@
 a {
 	color: #00b388
 }
+#block-views-block-quick-links-aggregator-view-block-1-4 > div.content > div > div > div.view-content {
+	position: relative;
+	right: 23px;
+}
 
+#block-views-block-aggregators-block-7 > div.content > div > div > div.view-content > div > div > span {
+	position: relative;
+	right: 23px;
+}
+
+#block-views-block-quick-links-aggregator-view-block-8 > div.content > div > div > div.view-content > div > div > span {
+	position: relative;
+	right: 23px;
+}

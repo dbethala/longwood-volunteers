@@ -27,14 +27,11 @@
 	border-radius: none;
 }
 .block-views {
-	border-radius: 35px;
+	/*border-radius: 35px;*/
 	margin-bottom: 15px;
 	background: white;
 }
 
-.views-element-container{
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
 
 #block-views-block-footer-text-block-2 {
 	border-radius: none;
@@ -110,7 +107,6 @@ a:hover {
 
 /* Quick Links Aggregator block */
 #block-views-block-quick-links-aggregator-view-block-1-4 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);	
 }
 
 #content > section {
@@ -121,7 +117,6 @@ a:hover {
 /* Announcements Block */
 #block-views-block-aggregators-block-1 {
 	background: white;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 /*#block-views-block-aggregators-block-1 > h2 {
 	font-size: 2.9rem;
@@ -131,20 +126,16 @@ a:hover {
 /* Participate BLock */
 #block-views-block-aggregators-block-2 {
 	background: white;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 /* Resources Block */
 #block-views-block-aggregators-block-3 {
 	background: white;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 #block-views-block-aggregators-block-5 {
 	background: white;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #block-views-block-aggregators-block-7 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	position: relative;
 	bottom: 10px;
 }
@@ -152,18 +143,15 @@ a:hover {
 /* Tools Block */
 #block-views-block-aggregators-block-4 {
 	background: white;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #block-views-block-quick-links-aggregator-view-block-2 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	position: relative;
 	top: 30px;
 }
 
 #block-views-block-quick-links-aggregator-view-block-3 {
 	background: white;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #block-footercolumn1 > div > div > div > h2:nth-child(1) > a {
@@ -186,28 +174,9 @@ a:hover {
 	font-size: 1.5rem;
 }
 
-#block-views-block-quick-links-aggregator-view-block-4 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-#block-views-block-quick-links-aggregator-view-block-5 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-#block-views-block-quick-links-aggregator-view-block-6 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
 
 #block-views-block-footer-logo-block-1-5 > div > div > div > div > div > div > div > img {
 	max-width: 75%;
-}
-
-#block-views-block-quick-links-aggregator-view-block-7 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-#block-views-block-aggregators-block-6 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #block-views-block-aggregators-block-5 > div {
@@ -234,7 +203,6 @@ a:hover {
 }
 
 #block-views-block-aggregators-block-8 {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	margin-top: 15px;
 }
 
@@ -268,27 +236,23 @@ a:hover {
 	#block-views-block-aggregators-block-1 {
 		background: white;
 		padding: 5px 20px 20px 20px;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		position: relative;
 	}
 	#block-views-block-aggregators-block-2 {
 		background: white;
 		padding: 5px 20px 20px 20px;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		position: relative;
 		top: 10px;
 	}
 	#block-views-block-aggregators-block-3 {
 		background: white;
 		padding: 5px 20px 20px 20px;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		position: relative;
 		top: 10px;
 		}
 	#block-views-block-aggregators-block-4 {
 		background: white;
 		padding: 5px 20px 20px 20px;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		position: relative;
 	}
 	#block-pagetitle {
