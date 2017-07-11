@@ -9,6 +9,10 @@
 }
 */
 
+#block-longwoodchimes > div.content {
+	display: none;
+}
+
 #content > section > div > div:nth-child(2) > div > div.view-empty > ul > li {
 	display: none;
 }
@@ -219,16 +223,17 @@ a:hover {
 	}
 
 	#block-pagetitle-2 > div > h1 {
-		font-size: 3.5rem;
+		font-size: 2.5rem;
 		position: relative;
 		right: 597px;
-		margin-top: -12px;
+		margin-top: -2px;
+		right: 466px;
 	}
 	#block-horizontalmenu-3 {
 		position: relative;
 		float: right;
 		bottom: 90px;
-		left: 226px;
+		left: 89px;
 	}
 	#block-horizontalmenu-3 > div > nav {
 		font-size: 1.4rem;

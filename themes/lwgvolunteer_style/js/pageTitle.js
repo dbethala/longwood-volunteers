@@ -3,9 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (flag) {
 			var title = document.querySelector('#block-pagetitle-2 > div > h1');
 			title.innerText = "Welcome to Your Volunteer Hub";
-			title.style.right = '379px';
+			title.style.right = '479px';
 		} else {
-			document.querySelector('#block-pagetitle-2 > div > h1').innerText = "Volunteer Hub";
+			var title = document.querySelector('#block-pagetitle-2 > div > h1');
+			title.innerText = "Volunteer Hub";
+			title.style.right = "570px";
 		}
 });
 

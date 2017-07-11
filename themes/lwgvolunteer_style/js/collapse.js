@@ -136,3 +136,34 @@ jQuery(function () {
 		jQuery('#block-views-block-aggregators-block-8 > div').slideToggle();
 	});
 });
+
+//Volunteer Benefits
+jQuery(function(){
+	jQuery('#block-views-block-aggregators-block-8 > h2').hover(
+		function() {
+			jQuery(this).css('color', '#e10098');
+		}, 
+		function() {
+			jQuery(this).css('color', 'black');
+		}
+	);
+});
+
+//Longwood Chimes
+jQuery(function () {
+	jQuery('#block-longwoodchimes > h2').click(function() {
+		window.open("https://longwoodgardens.org/membership/members-only/longwood-chimes", '_blank');
+	});
+
+});
+
+jQuery(function (){
+	jQuery('#block-longwoodchimes > h2').hover(
+		function() {
+			jQuery(this).css('color', '#e10098');
+		}, 
+		function() {
+			jQuery(this).css('color', 'black');
+		}
+	);
+});
