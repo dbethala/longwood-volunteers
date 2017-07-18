@@ -8,6 +8,6 @@ global-styling:
    
   js:
     js/sliderHeight.js: {}
-    js/collapse.js: {}
     js/pageTitle.js: {}
+    js/jsLink.js: {}
 

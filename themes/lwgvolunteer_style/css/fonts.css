@@ -42,6 +42,14 @@
 	color: black;
 }
 
+#block-longwoodchimes > h2 {
+	color: rgb(12,45,130);
+}
+
+#block-inthegardenstoday > h2 {
+	color: rgb(12,45,130);
+}
+
 .sidebar h2 {
 	color: black;	
 	border-bottom: none;
