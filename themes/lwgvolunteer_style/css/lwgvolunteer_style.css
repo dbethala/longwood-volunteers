@@ -9,6 +9,10 @@
 }
 */
 
+.region-primary-menu .menu-item a.is-active,
+.region-primary-menu .menu-item--active-trail a {
+  background: darkgray;
+}
 
 
 #block-inthegardenstoday > div {
