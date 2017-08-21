@@ -209,7 +209,6 @@ a:hover {
 
 #block-views-block-aggregators-block-5 > div {
 	position: relative;
-	left: 20px;
 }
 
 .site-footer .content a:hover {
@@ -223,7 +222,7 @@ a:hover {
 }
 
 #slick-views-jslideshow-block-3-1 > div > div > div > img {
-	height: 581px;
+	height: 640px;
 }
 
 #slick-views-jslideshow-block-4-1 > div > div > div > img {
@@ -235,7 +234,7 @@ a:hover {
 }
 
 
-@media (min-width: 768px) {
+@media (min-width: 902px) {
 	#main-wrapper {
 		margin-top:79px;
 	}
@@ -257,7 +256,7 @@ a:hover {
 		position: relative;
 		float: right;
 		bottom: 90px;
-		left: 89px;
+		left: 0px;
 	}
 	#block-horizontalmenu-3 > div > nav {
 		font-size: 1.4rem;
@@ -302,11 +301,18 @@ a:hover {
 		right: 20px
 	}
 	#slider-dom-id-38242a9d34fb085d2d8c7ff357e34c2e2dc32be5f5708f8c460617b42c741060 {
-		height: 500.385px;
+		height: 450.385px;
+	}
+	#slider-dom-id-15a4172cbd993898f0b8131fbfb143efc701c3e65562b4eb8863482e7cfff822 {
+		height: 420.615px;
 	}
 }
 
-@media (min-width: 200px) and (max-width: 768px) {
+@media (min-width: 200px) and (max-width: 901px) {
+	#block-longwoodchimes {
+		position: relative;
+		top: 30px;
+	}	
 	#block-views-block-footer-logo-block-1-5 > div > div > div > div > div > div > div > img {
 		max-width: 25%;
 	}
@@ -342,6 +348,10 @@ a:hover {
 	}
 	#block-views-block-aggregators-block-5 {
 		margin-bottom: 15px;
+	}
+	#block-inthegardenstoday {
+		position: relative;
+		top: 30px
 	}
 }
 
