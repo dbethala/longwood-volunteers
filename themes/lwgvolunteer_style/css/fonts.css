@@ -1,40 +1,42 @@
 @media (min-width: 902px) {
 	
 	.main-content h2 {
-		font-size: 2.85rem;
+		font-size: 28pt;;
 		margin-left: 10px;
 	}
 	
 	.sidebar h2 {
-		font-size: 2.85rem;
+		font-size: 28pt;
 	}
 	
 	.field-content {
 		color: black;
-		font-size: 1.40rem;
+		font-size: 19pt;
 	}
 }
 
 @media (max-width: 901px) {
 	
 	.main-content h2 {
-		font-size: 1.79rem;
-		margin-left: 25px;
+		font-size: 31pt;;
 	}
 	.sidebar h2 {
-		font-size: 1.79rem;
+		font-size: 31pt;;
 	}
 	.site-footer .content a {
-		font-size: 1.1rem;
+		font-size: 13pt;
 	}
 	.sidebar .block {
-		font-size: 1rem;
+		font-size: 13pt;
 	}
 	body {
-		font-size: 1rem;
+		font-size: 13pt;
 	}
 	.field-content {
-		font-size: 1rem;
+		font-size: 13pt;
+	}
+	#block-views-block-aggregators-block-11 > div.content {
+		display: none;
 	}
 }
 
