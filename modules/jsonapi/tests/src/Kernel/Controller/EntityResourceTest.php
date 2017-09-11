@@ -206,7 +206,7 @@ class EntityResourceTest extends JsonapiKernelTestBase {
    */
   public function testGetFilteredCollection() {
     $field_manager = $this->container->get('entity_field.manager');
-    $filter = new Filter(['type' => ['value' => 'article']], 'node_type', $field_manager);
+    $filter = new Filter(['type' => ['value' => 'article']]);
     // The fake route.
     $route = new Route(NULL, [], [
       '_entity_type' => 'node',
@@ -241,7 +241,7 @@ class EntityResourceTest extends JsonapiKernelTestBase {
       $field_manager,
       $current_context,
       $this->container->get('plugin.manager.field.field_type'),
-      $this->container->get('entity.repository')
+      $this->container->get('jsonapi.link_manager')
     );
 
     // Get the response.
@@ -295,7 +295,7 @@ class EntityResourceTest extends JsonapiKernelTestBase {
       $field_manager,
       $current_context,
       $this->container->get('plugin.manager.field.field_type'),
-      $this->container->get('entity.repository')
+      $this->container->get('jsonapi.link_manager')
     );
 
     // Get the response.
@@ -350,7 +350,7 @@ class EntityResourceTest extends JsonapiKernelTestBase {
       $field_manager,
       $current_context,
       $this->container->get('plugin.manager.field.field_type'),
-      $this->container->get('entity.repository')
+      $this->container->get('jsonapi.link_manager')
     );
 
     // Get the response.
@@ -369,11 +369,7 @@ class EntityResourceTest extends JsonapiKernelTestBase {
    * @covers ::getCollection
    */
   public function testGetEmptyCollection() {
-    $filter = new Filter(
-      ['uuid' => ['value' => 'invalid']],
-      'node',
-      $this->container->get('entity_field.manager')
-    );
+    $filter = new Filter(['uuid' => ['value' => 'invalid']]);
     $request = new Request([], [], [
       '_route_params' => [
         '_json_api_params' => [
@@ -407,7 +403,10 @@ class EntityResourceTest extends JsonapiKernelTestBase {
     $this->assertInstanceOf(User::class, $response->getResponseData()
       ->getData());
     $this->assertEquals(1, $response->getResponseData()->getData()->id());
-
+    $this->assertEquals(
+      ['node:1'],
+      $response->getCacheableMetadata()->getCacheTags()
+    );
     // to-many relationship.
     $response = $entity_resource->getRelated($this->user, 'roles', new Request());
     $this->assertInstanceOf(JsonApiDocumentTopLevel::class, $response
@@ -874,7 +873,7 @@ class EntityResourceTest extends JsonapiKernelTestBase {
       $this->container->get('entity_field.manager'),
       $current_context,
       $this->container->get('plugin.manager.field.field_type'),
-      $this->container->get('entity.repository')
+      $this->container->get('jsonapi.link_manager')
     );
   }
 

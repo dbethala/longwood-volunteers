@@ -7,6 +7,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\jsonapi\Context\CurrentContext;
+use Drupal\jsonapi\Context\FieldResolver;
 use Drupal\jsonapi\Normalizer\Value\JsonApiDocumentTopLevelNormalizerValue;
 use Drupal\jsonapi\Resource\EntityCollection;
 use Drupal\jsonapi\LinkManager\LinkManager;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Drupal\jsonapi\ResourceType\ResourceTypeRepository;
 
 /**
  * @see \Drupal\jsonapi\Resource\JsonApiDocumentTopLevel
@@ -49,7 +51,14 @@ class JsonApiDocumentTopLevelNormalizer extends NormalizerBase implements Denorm
   protected $entityTypeManager;
 
   /**
-   * Constructs an ContentEntityNormalizer object.
+   * The field resolver.
+   *
+   * @var \Drupal\jsonapi\Context\FieldResolver
+   */
+  protected $fieldResolver;
+
+  /**
+   * Constructs a JsonApiDocumentTopLevelNormalizer object.
    *
    * @param \Drupal\jsonapi\LinkManager\LinkManager $link_manager
    *   The link manager to get the links.
@@ -58,10 +67,12 @@ class JsonApiDocumentTopLevelNormalizer extends NormalizerBase implements Denorm
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    */
-  public function __construct(LinkManager $link_manager, CurrentContext $current_context, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(LinkManager $link_manager, CurrentContext $current_context, EntityTypeManagerInterface $entity_type_manager, ResourceTypeRepository $resource_type_repository, FieldResolver $field_resolver) {
     $this->linkManager = $link_manager;
     $this->currentContext = $current_context;
     $this->entityTypeManager = $entity_type_manager;
+    $this->resourceTypeRepository = $resource_type_repository;
+    $this->fieldResolver = $field_resolver;
   }
 
   /**
@@ -91,11 +102,18 @@ class JsonApiDocumentTopLevelNormalizer extends NormalizerBase implements Denorm
         if (empty($relationship['data'])) {
           return [];
         }
+        if (empty($relationship['data'][0]['id'])) {
+          throw new BadRequestHttpException("No ID specified for related resource");
+        }
         $id_list = array_column($relationship['data'], 'id');
         if (empty($relationship['data'][0]['type'])) {
           throw new BadRequestHttpException("No type specified for related resource");
         }
-        list($entity_type_id,) = explode('--', $relationship['data'][0]['type']);
+        if (!$resource_type = $this->resourceTypeRepository->getByTypeName($relationship['data'][0]['type'])) {
+          throw new BadRequestHttpException("Invalid type specified for related resource: '" . $relationship['data'][0]['type'] . "'");
+        }
+
+        $entity_type_id = $resource_type->getEntityTypeId();
         try {
           $entity_storage = $this->entityTypeManager->getStorage($entity_type_id);
         }
@@ -103,15 +121,29 @@ class JsonApiDocumentTopLevelNormalizer extends NormalizerBase implements Denorm
           throw new BadRequestHttpException("Invalid type specified for related resource: '" . $relationship['data'][0]['type'] . "'");
         }
         // In order to maintain the order ($delta) of the relationships, we need
-        // to load the entities and explore the uuid value.
+        // to load the entities and create a mapping between id and uuid.
         $related_entities = array_values($entity_storage->loadByProperties(['uuid' => $id_list]));
         $map = [];
         foreach ($related_entities as $related_entity) {
           $map[$related_entity->uuid()] = $related_entity->id();
         }
-        $canonical_ids = array_map(function ($input_value) use ($map) {
-          return empty($map[$input_value]) ? NULL : $map[$input_value];
-        }, $id_list);
+
+        // $id_list has the correct order of uuids. We stitch this together with
+        // $map which contains loaded entities, and then bring in the correct
+        // meta values from the relationship, whose deltas match with $id_list.
+        $canonical_ids = [];
+        foreach ($id_list as $delta => $uuid) {
+          if (empty($map[$uuid])) {
+            continue;
+          }
+          $reference_item = [
+            'target_id' => $map[$uuid],
+          ];
+          if (isset($relationship['data'][$delta]['meta'])) {
+            $reference_item += $relationship['data'][$delta]['meta'];
+          }
+          $canonical_ids[] = $reference_item;
+        }
 
         return array_filter($canonical_ids);
       }, $relationships);
@@ -131,7 +163,9 @@ class JsonApiDocumentTopLevelNormalizer extends NormalizerBase implements Denorm
    * {@inheritdoc}
    */
   public function normalize($object, $format = NULL, array $context = []) {
-    $context += ['resource_type' => $this->currentContext->getResourceType()];
+    if (empty($context['resource_type'])) {
+      $context['resource_type'] = $this->currentContext->getResourceType();
+    }
     $value_extractor = $this->buildNormalizerValue($object->getData(), $format, $context);
     if (!empty($context['cacheable_metadata'])) {
       $context['cacheable_metadata']->addCacheableDependency($value_extractor);
@@ -170,19 +204,30 @@ class JsonApiDocumentTopLevelNormalizer extends NormalizerBase implements Denorm
     }
     else {
       $is_collection = $data instanceof EntityCollection;
+      $include_count = $context['resource_type']->includeCount();
       // To improve the logical workflow deal with an array at all times.
       $entities = $is_collection ? $data->toArray() : [$data];
       $context['has_next_page'] = $is_collection ? $data->hasNextPage() : FALSE;
+
+      if ($include_count) {
+        $context['total_count'] = $is_collection ? $data->getTotalCount() : 1;
+      }
       $serializer = $this->serializer;
       $normalizer_values = array_map(function ($entity) use ($format, $context, $serializer) {
         return $serializer->normalize($entity, $format, $context);
       }, $entities);
     }
 
-    return new JsonApiDocumentTopLevelNormalizerValue($normalizer_values, $context, $is_collection, [
+    $link_context = [
       'link_manager' => $this->linkManager,
       'has_next_page' => $context['has_next_page'],
-    ]);
+    ];
+
+    if ($include_count) {
+      $link_context['total_count'] = $context['total_count'];
+    }
+
+    return new JsonApiDocumentTopLevelNormalizerValue($normalizer_values, $context, $is_collection, $link_context);
   }
 
   /**
@@ -200,13 +245,9 @@ class JsonApiDocumentTopLevelNormalizer extends NormalizerBase implements Denorm
     // Translate ALL the includes from the public field names to the internal.
     $includes = array_filter(explode(',', $request->query->get('include')));
     $public_includes = array_map(function ($include_str) use ($resource_type) {
-      $field_names = explode('.', $include_str);
-      return implode('.', array_map(
-        function ($field_name) use ($resource_type) {
-          return $resource_type->getInternalName($field_name);
-        },
-        $field_names
-      ));
+      $resolved = $this->fieldResolver->resolveInternal($include_str);
+      // We don't need the entity information for the includes. Clean it.
+      return preg_replace('/\.entity\./', '.', $resolved);
     }, $includes);
     // Build the expanded context.
     $context = [

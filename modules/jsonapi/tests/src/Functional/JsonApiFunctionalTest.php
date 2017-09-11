@@ -31,7 +31,7 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     ]));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertEquals(OffsetPage::$maxSize, count($collection_output['data']));
-    $this->assertContains('page[offset]=53', $collection_output['links']['next']);
+    $this->assertContains('page%5Boffset%5D=53', $collection_output['links']['next']);
     // 3. Load all articles (1st page, 2 items)
     $collection_output = Json::decode($this->drupalGet('/jsonapi/node/article', [
       'query' => ['page' => ['limit' => 2]],
@@ -49,7 +49,7 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     ]));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertEquals(2, count($collection_output['data']));
-    $this->assertContains('page[offset]=4', $collection_output['links']['next']);
+    $this->assertContains('page%5Boffset%5D=4', $collection_output['links']['next']);
     // 5. Single article.
     $uuid = $this->nodes[0]->uuid();
     $single_output = Json::decode($this->drupalGet('/jsonapi/node/article/' . $uuid));
@@ -322,6 +322,7 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     $this->assertArrayHasKey('uuid', $created_response['data']['attributes']);
     $uuid = $created_response['data']['attributes']['uuid'];
     $this->assertEquals(2, count($created_response['data']['relationships']['field_tags']['data']));
+    $this->assertEquals($created_response['data']['links']['self'], $response->getHeader('Location')[0]);
 
     // 2. Authorization error.
     $response = $this->request('POST', $collection_url, [
@@ -348,6 +349,7 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     $response = $this->request('POST', $collection_url, [
       'body' => Json::encode($body),
       'auth' => [$this->user->getUsername(), $this->user->pass_raw],
+      'headers' => ['Accept' => 'application/vnd.api+json'],
     ]);
     $created_response = Json::decode($response->getBody()->__toString());
     $this->assertEquals(422, $response->getStatusCode());
@@ -381,7 +383,10 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     $response = $this->request('POST', $collection_url, [
       'body' => '{"bad json",,,}',
       'auth' => [$this->user->getUsername(), $this->user->pass_raw],
-      'headers' => ['Content-Type' => 'application/vnd.api+json'],
+      'headers' => [
+        'Content-Type' => 'application/vnd.api+json',
+        'Accept' => 'application/vnd.api+json',
+      ],
     ]);
     $created_response = Json::decode($response->getBody()->__toString());
     $this->assertEquals(422, $response->getStatusCode());
@@ -495,7 +500,10 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     $response = $this->request('DELETE', $relationship_url, [
       // Send a request with no body.
       'auth' => [$this->user->getUsername(), $this->user->pass_raw],
-      'headers' => ['Content-Type' => 'application/vnd.api+json'],
+      'headers' => [
+        'Content-Type' => 'application/vnd.api+json',
+        'Accept' => 'application/vnd.api+json',
+      ],
     ]);
     $updated_response = Json::decode($response->getBody()->__toString());
     $this->assertEquals(
@@ -536,7 +544,10 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     $response = $this->request('PATCH', $individual_url, [
       'body' => Json::encode($body),
       'auth' => [$this->user->getUsername(), $this->user->pass_raw],
-      'headers' => ['Content-Type' => 'application/vnd.api+json'],
+      'headers' => [
+        'Content-Type' => 'application/vnd.api+json',
+        'Accept' => 'application/vnd.api+json',
+      ],
     ]);
     $updated_response = Json::decode($response->getBody()->__toString());
     $this->assertEquals(422, $response->getStatusCode());
@@ -563,7 +574,10 @@ class JsonApiFunctionalTest extends JsonApiFunctionalTestBase {
     $response = $this->request('PATCH', $individual_url, [
       'body' => Json::encode($body),
       'auth' => [$this->user->getUsername(), $this->user->pass_raw],
-      'headers' => ['Content-Type' => 'application/vnd.api+json'],
+      'headers' => [
+        'Content-Type' => 'application/vnd.api+json',
+        'Accept' => 'application/vnd.api+json',
+      ],
     ]);
     $updated_response = Json::decode($response->getBody()->__toString());
     $this->assertEquals(400, $response->getStatusCode());

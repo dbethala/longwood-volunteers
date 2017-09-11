@@ -48,7 +48,7 @@ services:
       - { name: normalizer, priority: 21 }
   serializer.normalizer.jsonapi_document_toplevel.jsonapi:
     class: Drupal\jsonapi\Normalizer\JsonApiDocumentTopLevelNormalizer
-    arguments: ['@jsonapi.link_manager', '@jsonapi.current_context', '@entity_type.manager', '@entity.repository']
+    arguments: ['@jsonapi.link_manager', '@jsonapi.current_context', '@entity_type.manager', '@jsonapi.resource_type.repository', '@jsonapi.field_resolver']
     tags:
       - { name: normalizer, priority: 22 }
   serializer.normalizer.entity_reference_field.jsonapi:
@@ -105,6 +105,10 @@ services:
       # Set priority to 201 so it happens right before the page cache
       # middleware (priority 200)has the opportunity to respond.
       - { name: http_middleware, priority: 201 }
+
+  jsonapi.entity.to_jsonapi:
+    class: Drupal\jsonapi\EntityToJsonApi
+    arguments: ['@serializer', '@jsonapi.resource_type.repository', '@current_user']
 
   logger.channel.jsonapi:
     parent: logger.channel_base

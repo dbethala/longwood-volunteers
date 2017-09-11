@@ -41,7 +41,7 @@ function webform_drush_command() {
       'header-keys' => 'Set to "label" (default) or "key"',
       'options-item-format' => 'Set to "label" (default) or "key". Set to "key" to print select list values by their keys instead of labels.',
       'options-format' => 'Set to "separate" (default) or "compact" to determine how select list values are exported.',
-      'entity-reference-format' => 'Set to "link" (default) or "id" to determine how entity references are exported.',
+      'entity-reference-items' => 'Comma-separated list of entity reference items (id, title, and/or url) to be exported.',
       'excluded-columns' => 'Comma-separated list of component IDs or webform keys to exclude.',
       // Download options.
       'entity-type' => 'The entity type to which this submission was submitted from.',
@@ -229,6 +229,9 @@ function webform_drush_help($section) {
     case 'drush:webform-libraries-remove':
       return dt('This command removes all downloaded third party libraries required by the Webform module.');
 
+    case 'drush:webform-libraries-composer-update':
+      return dt("Adds the Webform module's libraries as repositories to Drupal's composer.json.");
+
     case 'drush:webform-repair':
       return dt('Makes sure all Webform admin settings and webforms are up-to-date. Only use this command if you are having problems with your existing Webform configuration.');
 
@@ -240,6 +243,9 @@ function webform_drush_help($section) {
 
     case 'drush:webform-generate':
       return dt('This command will create submissions in specified webform.');
+
+    case 'drush:webform-composer-update':
+      return dt("Updates the Drupal installation's composer.json to include the Webform module's selected libraries as repositories.");
 
     case 'meta:webform:title':
       return dt('Webform commands');
@@ -284,10 +290,14 @@ function drush_webform_export($webform_id = NULL) {
   $submission_exporter->setSourceEntity($source_entity);
 
   // Get command options as export options.
+  $default_options = $submission_exporter->getDefaultExportOptions();
   $export_options = drush_redispatch_get_options();
   // Convert dashes to underscores.
   foreach ($export_options as $key => $value) {
     unset($export_options[$key]);
+    if (isset($default_options[$key]) && is_array($default_options[$key])) {
+      $value = explode(',', $value);
+    }
     $export_options[str_replace('-', '_', $key)] = $value;
   }
   $export_options += $submission_exporter->getDefaultExportOptions();
@@ -504,6 +514,12 @@ function drush_webform_libraries_make() {
   drush_print(_drush_webform_libraries_make());
 }
 
+/**
+ * Generate drush make as YAML.
+ *
+ * @return string
+ *   Drush make as YAML
+ */
 function _drush_webform_libraries_make() {
   /** @var \Drupal\webform\WebformLibrariesManagerInterface $libraries_manager */
   $libraries_manager = \Drupal::service('webform.libraries_manager');
@@ -583,7 +599,7 @@ function drush_webform_libraries_composer() {
           'type' => $dist_type,
         ],
         'require' => [
-          'composer/installers' => '~1.0'
+          'composer/installers' => '~1.0',
         ],
       ],
     ];
@@ -593,12 +609,9 @@ function drush_webform_libraries_composer() {
   ksort($repositories);
   ksort($require);
   $data['repositories'] = $repositories;
-  $data['require'] = $require;
-
   // Drupal.org test bot is throwing...
   // Your requirements could not be resolved to an installable set of packages.
-  // @todo Try to be require all libraries so that they can be installed via composer.
-  // $data['require'];
+  $data['require'] = $require;
 
   drush_print(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 }
@@ -685,7 +698,7 @@ function drush_webform_repair() {
   _webform_update_field_storage_definitions();
 
   drush_print('Repairing webform submission storage schema...');
-   _webform_update_webform_submission_storage_schema();
+  _webform_update_webform_submission_storage_schema();
 
   // Copied from: outside_in_install().
   drush_print('Repairing quick links...');
@@ -856,8 +869,8 @@ function drush_webform_composer_update() {
   }
 
   // Get repositories and require.
-  $repositories =& $data['repositories'];
-  $require =& $data['require'];
+  $repositories = &$data['repositories'];
+  $require = &$data['require'];
 
   // Remove all existing _webform repositories.
   foreach ($repositories as $repository_name => $repository) {

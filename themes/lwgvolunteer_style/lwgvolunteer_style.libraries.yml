@@ -7,7 +7,6 @@ global-styling:
       css/fonts.css: {}
    
   js:
-    js/sliderHeight.js: {}
     js/pageTitle.js: {}
     js/jsLink.js: {}
 

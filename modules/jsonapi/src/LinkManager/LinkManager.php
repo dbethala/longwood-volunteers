@@ -11,16 +11,22 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 
 /**
- * @internal
+ * Class to generate links and queries for entities.
+ *
+ * @api
  */
 class LinkManager {
 
   /**
+   * Used to determine the route from a given request.
+   *
    * @var \Symfony\Component\Routing\Matcher\RequestMatcherInterface
    */
   protected $router;
 
   /**
+   * Used to generate a link to a jsonapi representation of an entity.
+   *
    * @var \Drupal\Core\Render\MetadataBubblingUrlGenerator
    */
   protected $urlGenerator;
@@ -105,6 +111,9 @@ class LinkManager {
    *   - 'prev' and 'first' keys if it's not the first page.
    */
   public function getPagerLinks(Request $request, array $link_context = []) {
+    if (!empty($link_context['total_count']) && !$total = (int) $link_context['total_count']) {
+      return [];
+    }
     $params = $request->get('_json_api_params');
     if ($page_param = $params[OffsetPage::KEY_NAME]) {
       /* @var \Drupal\jsonapi\Routing\Param\OffsetPage $page_param */
@@ -124,6 +133,10 @@ class LinkManager {
     // Check if this is not the last page.
     if ($link_context['has_next_page']) {
       $links['next'] = $this->getRequestLink($request, $this->getPagerQueries('next', $offset, $size, $query));
+
+      if (!empty($total)) {
+        $links['last'] = $this->getRequestLink($request, $this->getPagerQueries('last', $offset, $size, $query, $total));
+      }
     }
     // Check if this is not the first page.
     if ($offset > 0) {
@@ -145,11 +158,13 @@ class LinkManager {
    *   The pagination page size.
    * @param array $query
    *   The query parameters.
+   * @param int $total
+   *   The total size of the collection.
    *
    * @return array
    *   The pagination query param array.
    */
-  protected function getPagerQueries($link_id, $offset, $size, array $query = []) {
+  protected function getPagerQueries($link_id, $offset, $size, array $query = [], $total = 0) {
     $extra_query = [];
     switch ($link_id) {
       case 'next':
@@ -168,6 +183,17 @@ class LinkManager {
             'limit' => $size,
           ],
         ];
+        break;
+
+      case 'last':
+        if ($total) {
+          $extra_query = [
+            'page' => [
+              'offset' => (ceil($total / $size) - 1) * $size,
+              'limit' => $size,
+            ],
+          ];
+        }
         break;
 
       case 'prev':

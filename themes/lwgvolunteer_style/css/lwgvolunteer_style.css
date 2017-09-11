@@ -256,6 +256,9 @@ a:hover {
 	#block-views-block-slick-carousel-block-1 > div.content > div > div > div.view-content > div {
 		height: 0px;
 	}
+	#main-wrapper {
+		margin-top: 75px;
+	}
 	#block-sitebranding > a {
 		max-width: 30%;
 	}
@@ -358,7 +361,7 @@ a:hover {
 		left: 490px;
 		top: 5px;	
 		max-width: 60%;
-		height: 403px;
+		height: 400px;
 	}
 	#resources-title {
 		height: 400px;

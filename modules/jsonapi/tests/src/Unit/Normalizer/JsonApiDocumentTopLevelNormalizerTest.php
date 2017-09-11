@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\jsonapi\Context\FieldResolver;
 use Drupal\jsonapi\ResourceType\ResourceType;
 use Drupal\jsonapi\Normalizer\JsonApiDocumentTopLevelNormalizer;
 use Drupal\jsonapi\LinkManager\LinkManager;
@@ -15,6 +16,7 @@ use Prophecy\Argument;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Drupal\jsonapi\ResourceType\ResourceTypeRepository;
 
 /**
  * @coversDefaultClass \Drupal\jsonapi\Normalizer\JsonApiDocumentTopLevelNormalizer
@@ -35,6 +37,17 @@ class JsonApiDocumentTopLevelNormalizerTest extends UnitTestCase {
   public function setUp() {
     $link_manager = $this->prophesize(LinkManager::class);
     $current_context_manager = $this->prophesize(CurrentContext::class);
+    $resource_type_repository = $this->prophesize(ResourceTypeRepository::class);
+    $field_resolver = $this->prophesize(FieldResolver::class);
+
+    $resource_type = $this->prophesize(ResourceType::class);
+    $resource_type
+      ->getEntityTypeId()
+      ->willReturn('node');
+
+    $resource_type_repository
+      ->getByTypeName(Argument::any())
+      ->willReturn($resource_type->reveal());
 
     $entity_storage = $this->prophesize(EntityStorageInterface::class);
     $self = $this;
@@ -65,7 +78,9 @@ class JsonApiDocumentTopLevelNormalizerTest extends UnitTestCase {
     $this->normalizer = new JsonApiDocumentTopLevelNormalizer(
       $link_manager->reveal(),
       $current_context_manager->reveal(),
-      $entity_type_manager->reveal()
+      $entity_type_manager->reveal(),
+      $resource_type_repository->reveal(),
+      $field_resolver->reveal()
     );
 
     $serializer = $this->prophesize(DenormalizerInterface::class);
@@ -118,7 +133,11 @@ class JsonApiDocumentTopLevelNormalizerTest extends UnitTestCase {
             'relationships' => ['field_dummy' => ['data' => ['type' => 'node', 'id' => '76dd5c18-ea1b-4150-9e75-b21958a2b836']]],
           ],
         ],
-        ['field_dummy' => [1]],
+        ['field_dummy' => [
+          [
+            'target_id' => 1
+          ],
+        ]],
       ],
       [
         [
@@ -128,7 +147,32 @@ class JsonApiDocumentTopLevelNormalizerTest extends UnitTestCase {
             'relationships' => ['field_dummy' => ['data' => [['type' => 'node', 'id' => '76dd5c18-ea1b-4150-9e75-b21958a2b836'], ['type' => 'node', 'id' => 'fcce1b61-258e-4054-ae36-244d25a9e04c']]]],
           ],
         ],
-        ['field_dummy' => [1, 2]],
+        ['field_dummy' => [
+          [
+            'target_id' => 1,
+          ],
+          [
+            'target_id' => 2,
+          ]
+        ]],
+      ],
+      [
+        [
+          'data' => [
+            'type' => 'lorem',
+            'id' => '535ba297-8d79-4fc1-b0d6-dc2f047765a1',
+            'relationships' => ['field_dummy' => ['data' => [['type' => 'node', 'id' => '76dd5c18-ea1b-4150-9e75-b21958a2b836', 'meta' => ['foo' => 'bar']], ['type' => 'node', 'id' => 'fcce1b61-258e-4054-ae36-244d25a9e04c']]]],
+          ],
+        ],
+        ['field_dummy' => [
+          [
+            'target_id' => 1,
+            'foo' => 'bar',
+          ],
+          [
+            'target_id' => 2,
+          ]
+        ]],
       ],
     ];
   }

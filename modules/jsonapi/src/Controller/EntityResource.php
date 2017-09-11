@@ -18,6 +18,7 @@ use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
 use Drupal\jsonapi\Context\CurrentContext;
 use Drupal\jsonapi\Exception\EntityAccessDeniedHttpException;
 use Drupal\jsonapi\Exception\UnprocessableHttpEntityException;
+use Drupal\jsonapi\LinkManager\LinkManager;
 use Drupal\jsonapi\Query\QueryBuilder;
 use Drupal\jsonapi\Resource\EntityCollection;
 use Drupal\jsonapi\Resource\JsonApiDocumentTopLevel;
@@ -80,6 +81,13 @@ class EntityResource {
   protected $pluginManager;
 
   /**
+   * The link manager service.
+   *
+   * @var \Drupal\jsonapi\LinkManager\LinkManager
+   */
+  protected $linkManager;
+
+  /**
    * Instantiates a EntityResource object.
    *
    * @param \Drupal\jsonapi\ResourceType\ResourceType $resource_type
@@ -94,14 +102,17 @@ class EntityResource {
    *   The current context.
    * @param \Drupal\Core\Field\FieldTypePluginManagerInterface $plugin_manager
    *   The plugin manager for fields.
+   * @param \Drupal\jsonapi\LinkManager\LinkManager $link_manager
+   *   The link manager service.
    */
-  public function __construct(ResourceType $resource_type, EntityTypeManagerInterface $entity_type_manager, QueryBuilder $query_builder, EntityFieldManagerInterface $field_manager, CurrentContext $current_context, FieldTypePluginManagerInterface $plugin_manager) {
+  public function __construct(ResourceType $resource_type, EntityTypeManagerInterface $entity_type_manager, QueryBuilder $query_builder, EntityFieldManagerInterface $field_manager, CurrentContext $current_context, FieldTypePluginManagerInterface $plugin_manager, LinkManager $link_manager) {
     $this->resourceType = $resource_type;
     $this->entityTypeManager = $entity_type_manager;
     $this->queryBuilder = $query_builder;
     $this->fieldManager = $field_manager;
     $this->currentContext = $current_context;
     $this->pluginManager = $plugin_manager;
+    $this->linkManager = $link_manager;
   }
 
   /**
@@ -183,7 +194,22 @@ class EntityResource {
     }
 
     $entity->save();
-    return $this->getIndividual($entity, $request, 201);
+
+    // Build response object.
+    $response = $this->getIndividual($entity, $request, 201);
+
+    // According to JSON API specification, when a new entity was created
+    // we should send "Location" header to the frontend.
+    $entity_url = $this->linkManager->getEntityLink(
+      $entity->uuid(),
+      $this->resourceType,
+      [],
+      'individual'
+    );
+    $response->headers->set('Location', $entity_url);
+
+    // Return response object with updated headers info.
+    return $response;
   }
 
   /**
@@ -277,6 +303,17 @@ class EntityResource {
     $collection_data = $this->loadEntitiesWithAccess($storage, $results);
     $entity_collection = new EntityCollection(array_column($collection_data, 'entity'));
     $entity_collection->setHasNextPage($has_next_page);
+
+    // Calculate all the results and pass them to the EntityCollectionInterface.
+    if ($this->resourceType->includeCount()) {
+      $total_results = $this
+        ->getCollectionCountQuery($entity_type_id, $params)
+        ->count()
+        ->execute();
+
+      $entity_collection->setTotalCount($total_results);
+    }
+
     $response = $this->respondWithCollection($entity_collection, $entity_type_id);
 
     // Add cacheable metadata for the access result.
@@ -306,18 +343,20 @@ class EntityResource {
     if (!($field_list = $entity->get($related_field)) || !$this->isRelationshipField($field_list)) {
       throw new NotFoundHttpException(sprintf('The relationship %s is not present in this resource.', $related_field));
     }
+    // Add the cacheable metadata from the host entity.
+    $cacheable_metadata = CacheableMetadata::createFromObject($entity);
     /* @var \Drupal\Core\Field\EntityReferenceFieldItemList $field_list */
     $is_multiple = $field_list
       ->getDataDefinition()
       ->getFieldStorageDefinition()
       ->isMultiple();
     if (!$is_multiple) {
-      return $this->getIndividual($field_list->entity, $request);
+      $response = $this->getIndividual($field_list->entity, $request);
+      // Add cacheable metadata for host entity to individual response.
+      $response->addCacheableDependency($cacheable_metadata);
+      return $response;
     }
     $collection_data = [];
-    $cacheable_metadata = new CacheableMetadata();
-    // Add the cacheable metadata from the host entity.
-    $cacheable_metadata->addCacheableDependency($entity);
     foreach ($field_list->referencedEntities() as $referenced_entity) {
       /* @var \Drupal\Core\Entity\EntityInterface $referenced_entity */
       $collection_data[$referenced_entity->id()] = static::getEntityAndAccess($referenced_entity);
@@ -661,6 +700,7 @@ class EntityResource {
     if ($origin instanceof ContentEntityInterface && $destination instanceof ContentEntityInterface) {
       // First scenario: both are content entities.
       try {
+        $field_name = $this->resourceType->getInternalName($field_name);
         $destination_field_list = $destination->get($field_name);
       }
       catch (\Exception $e) {
