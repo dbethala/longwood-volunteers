@@ -9,6 +9,10 @@
 }
 */
 
+.site-footer .content a:focus {
+	color: #37bdff;
+}
+
 #block-views-block-aggregators-block-11 > div.content > div > div {
 	background-color: #f6f6f6;	
 }
@@ -247,17 +251,17 @@ a:hover {
 	height: 581px;
 }
 
-#block-views-block-aggregators-block-8 {
-	margin-top: 15px;
-}
-
 
 @media (min-width: 902px) {
+	#header {
+		max-height: 75px;
+	}
 	#block-views-block-slick-carousel-block-1 > div.content > div > div > div.view-content > div {
 		height: 0px;
 	}
 	#main-wrapper {
-		margin-top: 75px;
+		margin-top: 83px;
+		position: relative;
 	}
 	#block-sitebranding > a {
 		max-width: 30%;
@@ -269,9 +273,9 @@ a:hover {
 	#block-pagetitle-2 > div > h1 {
 		font-size: 2.5rem;
 		position: relative;
-		right: 597px;
+		right: 800px;
+		margin-left: 30px;
 		margin-top: -2px;
-		right: 466px;
 	}
 	#block-horizontalmenu-3 {
 		position: relative;
@@ -344,7 +348,7 @@ a:hover {
 		display: inline-block;
 		box-sizing: border-box;	
 		border: 1px solid;
-		height: 346px;
+		height: 333px;
 		width: 503px;
 		bottom: -14px;	
 		padding: 142px 168px;
@@ -361,24 +365,24 @@ a:hover {
 		left: 490px;
 		top: 5px;	
 		max-width: 60%;
-		height: 400px;
+		height: 333px;
 	}
 	#resources-title {
-		height: 400px;
+		height: 333px;
 	}
 	#tools-banner > img.image-style-standard {
 		position: relative;
 		left: 490px;
 		top: 5px;
 		max-width: 60%;
-		height: 348px;
+		height: 333px;
 	}
 	#participate-banner > img.image-style-standard {
 		position: relative;
 		left: 490px;
 		top: 5px;
 		max-width: 61%;
-		height: 350px;
+		height: 333px;
 	}
 	.highlighted {
 		height: 350px;	
