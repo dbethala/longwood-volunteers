@@ -9,6 +9,10 @@
 }
 */
 
+.messages.messages--info {
+	background-image: none;
+}
+
 .site-footer .content a:focus {
 	color: #37bdff;
 }
@@ -255,6 +259,20 @@ a:hover {
 @media (min-width: 902px) {
 	#header {
 		max-height: 75px;
+	}
+	#block-views-block-aggregators-block-6 > h2 {
+		top: 10px;
+		position: relative;
+	}
+	#block-views-block-quick-links-aggregator-view-block-5 > h2 {
+		position: relative;
+		top: 10px;
+	}
+	#block-views-block-aggregators-block-12 {
+		bottom: 10px;
+	}
+	#block-views-block-quick-links-aggregator-view-block-5 {
+		bottom: 10px;
 	}
 	#block-views-block-slick-carousel-block-1 > div.content > div > div > div.view-content > div {
 		height: 0px;
