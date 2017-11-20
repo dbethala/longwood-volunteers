@@ -35,6 +35,7 @@ use Drupal\search_api\Utility\FieldsHelperInterface;
 use Drupal\search_api\Utility\Utility as SearchApiUtility;
 use Drupal\search_api_autocomplete\SearchInterface;
 use Drupal\search_api_autocomplete\Suggestion;
+use Drupal\search_api_autocomplete\Suggestion\SuggestionFactory;
 use Drupal\search_api_solr\SearchApiSolrException;
 use Drupal\search_api_solr\SolrBackendInterface;
 use Drupal\search_api_solr\SolrConnector\SolrConnectorPluginManager;
@@ -473,6 +474,8 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   public function supportsDataType($type) {
     return in_array($type, [
       'location',
+      'rpt',
+      'solr_string_ngram',
       'solr_string_storage',
       'solr_text_ngram',
       'solr_text_phonetic',
@@ -749,6 +752,11 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       $doc->setField('id', $this->createId($index_id, $id));
       $doc->setField('index_id', $index_id);
 
+      // Add document level boost from Search API item.
+      if ($boost = $item->getBoost()) {
+        $doc->setBoost($boost);
+      }
+
       // Add the site hash and language-specific base URL.
       $doc->setField('hash', SearchApiSolrUtility::getSiteHash());
       $lang = $item->getLanguage();
@@ -949,13 +957,14 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     }
 
     // @todo Make this more configurable so that Search API can choose which
-    //   fields it wants to fetch.
+    //   fields it wants to fetch. But don't skip the minimum required fields as
+    //   currently set in the "else" path.
     //   @see https://www.drupal.org/node/2880674
     if (!empty($this->configuration['retrieve_data'])) {
       $solarium_query->setFields(['*', 'score']);
     }
     else {
-      $returned_fields = [SEARCH_API_ID_FIELD_NAME, 'score'];
+      $returned_fields = [$field_names['search_api_id'], $field_names['search_api_language'], $field_names['search_api_relevance']];
       if (!$this->configuration['site_hash']) {
         $returned_fields[] = 'hash';
       }
@@ -971,6 +980,17 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     // Handle spatial filters.
     if (isset($options['search_api_location'])) {
       $this->setSpatial($solarium_query, $options['search_api_location'], $field_names);
+    }
+
+    // Handle spatial filters.
+    if (isset($options['search_api_rpt'])) {
+      if (version_compare($connector->getSolrVersion(), 5.1, '>=')) {
+        $this->setRpt($solarium_query, $options['search_api_rpt'], $field_names);
+      }
+      else {
+        \Drupal::logger('search_api_solr')->error('Rpt data type feature is only supported by Solr version 5.1 or higher.');
+      }
+
     }
 
     // Handle field collapsing / grouping.
@@ -1360,6 +1380,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     // SearchApiSolrBackend::getFieldNames().
     $id_field = $field_names['search_api_id'];
     $score_field = $field_names['search_api_relevance'];
+    $language_field = $field_names['search_api_language'];
 
     // Set up the results array.
     $result_set = $query->getResults();
@@ -1407,8 +1428,15 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       }
       $result_item = $this->fieldsHelper->createItem($index, $item_id);
       $result_item->setExtraData('search_api_solr_document', $doc);
-      $result_item->setScore($doc_fields[$score_field]);
-      unset($doc_fields[$id_field], $doc_fields[$score_field]);
+      $result_item->setLanguage($doc_fields[$language_field]);
+
+      if(isset($doc_fields[$score_field])) {
+        $result_item->setScore($doc_fields[$score_field]);
+        unset($doc_fields[$score_field]);
+      }
+      // The language field should not be removed. We keep it in the values as
+      // well for backward compatibility and for easy access.
+      unset($doc_fields[$id_field]);
 
       // Extract properties from the Solr document, translating from Solr to
       // Search API property names. This reverses the mapping in
@@ -1551,11 +1579,33 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           }
           $facet = $extract_facets[$matches[1]];
           if ($count >= $facet['min_count']) {
-            $facets[$matches[1]][] = array(
+            $facets[$matches[1]][] = [
               'filter' => "[{$matches[2]} {$matches[3]}]",
               'count' => $count,
-            );
+            ];
           }
+        }
+      }
+    }
+    // Extract heatmaps.
+    if (isset($result_data['facet_counts']['facet_heatmaps'])) {
+      if ($spatials = $query->getOption('search_api_rpt')) {
+        foreach ($result_data['facet_counts']['facet_heatmaps'] as $key => $value) {
+          if (!preg_match('/^rpts_(.*)$/', $key, $matches)) {
+            continue;
+          }
+          if (empty($extract_facets[$matches[1]])) {
+            continue;
+          }
+          $heatmaps = array_slice($value, 15);
+          array_walk_recursive($heatmaps, function ($heatmaps) use (&$heatmap) {
+            $heatmap[] = $heatmaps;
+          });
+          $count = array_sum($heatmap);
+          $facets[$matches[1]][] = [
+            'filter' => $value,
+            'count' => $count,
+          ];
         }
       }
     }
@@ -2006,13 +2056,17 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    * @param string $user_input
    *   The complete user input for the fulltext search keywords so far.
    *
-   * @return \Drupal\search_api_autocomplete\SuggestionInterface[]
+   * @return \Drupal\search_api_autocomplete\Suggestion\SuggestionInterface[]
    *   An array of suggestions.
    *
    * @see \Drupal\search_api_autocomplete\AutocompleteBackendInterface
    */
   public function getAutocompleteSuggestions(QueryInterface $query, SearchInterface $search, $incomplete_key, $user_input) {
     $suggestions = [];
+    $factory = NULL;
+    if (class_exists(SuggestionFactory::class)) {
+      $factory = new SuggestionFactory($user_input);
+    }
 
     if ($this->configuration['suggest_suffix'] || $this->configuration['suggest_corrections'] || $this->configuration['suggest_words']) {
       $connector = $this->getSolrConnector();
@@ -2042,6 +2096,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         else {
           $fl[] = 'spell';
         }
+
+        // Make the input lowercase as the indexed data is (usually) also all
+        // lowercase.
+        $incomplete_key = Unicode::strtolower($incomplete_key);
+        $user_input = Unicode::strtolower($user_input);
+
         $solarium_query->setFields($fl);
         $solarium_query->setPrefix($incomplete_key);
         $solarium_query->setLimit(10);
@@ -2066,7 +2126,13 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
 
         if ($this->configuration['suggest_suffix']) {
           foreach ($autocomplete_terms as $term => $count) {
-            $suggestions[] = Suggestion::fromSuggestionSuffix(mb_substr($term, mb_strlen($incomplete_key)), $count, $user_input);
+            $suggestion_suffix = mb_substr($term, mb_strlen($incomplete_key));
+            if ($factory) {
+              $suggestions[] = $factory->createFromSuggestionSuffix($suggestion_suffix, $count);
+            }
+            else {
+              $suggestions[] = Suggestion::fromSuggestionSuffix($suggestion_suffix, $count, $user_input);
+            }
           }
         }
 
@@ -2092,11 +2158,21 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           }
 
           if ($suggestion != $user_input && !array_key_exists($suggestion, $autocomplete_terms)) {
-            $suggestions[] = Suggestion::fromSuggestedKeys($suggestion, $user_input);
+            if ($factory) {
+              $suggestions[] = $factory->createFromSuggestedKeys($suggestion);
+            }
+            else {
+              $suggestions[] = Suggestion::fromSuggestedKeys($suggestion, $user_input);
+            }
             foreach (array_keys($autocomplete_terms) as $term) {
               $completion = preg_replace('@(\b)' . preg_quote($incomplete_key, '@') . '$@', '$1' . $term . '$2', $suggestion);
               if ($completion != $suggestion) {
-                $suggestions[] = Suggestion::fromSuggestedKeys($completion, $user_input);
+                if ($factory) {
+                  $suggestions[] = $factory->createFromSuggestedKeys($completion);
+                }
+                else {
+                  $suggestions[] = Suggestion::fromSuggestedKeys($completion, $user_input);
+                }
               }
             }
           }
@@ -2241,7 +2317,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    */
   protected function flattenKeys(array $keys) {
     $k = [];
-    $pre = ($keys['#conjunction'] == 'OR') ? '' : '+';
+    $pre = '+';
+
+    if(isset($keys['#conjunction']) && $keys['#conjunction'] == 'OR') {
+      $pre = '';
+    }
+
     $neg = empty($keys['#negation']) ? '' : '-';
 
     foreach ($keys as $key_nr => $key) {
@@ -2464,10 +2545,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    *   The spatial options to add.
    * @param array $field_names
    *   The field names, to add the spatial options for.
+   *
+   * @throws \Drupal\search_api_solr\SearchApiSolrException
    */
-  protected function setSpatial(Query $solarium_query, array &$spatial_options, $field_names = array()) {
+  protected function setSpatial(Query $solarium_query, array $spatial_options, $field_names = []) {
     if (count($spatial_options) > 1) {
-      throw new SearchApiSolrException('Only one spatial searche can be handled per query.');
+      throw new SearchApiSolrException('Only one spatial search can be handled per query.');
     }
 
     $spatial = reset($spatial_options);
@@ -2551,6 +2634,41 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         }
       }
     }
+  }
+
+  /**
+   * Adds rpt spatial features to the search query.
+   *
+   * @param \Solarium\QueryType\Select\Query\Query $solarium_query
+   *   The solr query.
+   * @param array $rpt_options
+   *   The rpt spatial options to add.
+   * @param array $field_names
+   *   The field names, to add the rpt spatial options for.
+   *
+   * @throws \Drupal\search_api_solr\SearchApiSolrException
+   *   Thrown when more than one rpt spatial searches are added.
+   */
+  protected function setRpt(Query $solarium_query, array $rpt_options, $field_names = array()) {
+    // Add location filter
+    if (count($rpt_options) > 1) {
+      throw new SearchApiSolrException('Only one spatial search can be handled per query.');
+    }
+
+    $rpt = reset($rpt_options);
+    $solr_field = $field_names[$rpt['field']];
+    $rpt['geom'] = isset($rpt['geom']) ? $rpt['geom'] : '["-180 -90" TO "180 90"]';
+
+    // Add location filter
+    $solarium_query->createFilterQuery($solr_field)->setQuery($solr_field . ':' . $rpt['geom']);
+
+    // Add Solr Query params
+    $solarium_query->addParam('facet', 'on');
+    $solarium_query->addParam('facet.heatmap', $solr_field);
+    $solarium_query->addParam('facet.heatmap.geom', $rpt['geom']);
+    $solarium_query->addParam('facet.heatmap.format', $rpt['format']);
+    $solarium_query->addParam('facet.heatmap.maxCells', $rpt['maxCells']);
+    $solarium_query->addParam('facet.heatmap.gridLevel', $rpt['gridLevel']);
   }
 
   /**

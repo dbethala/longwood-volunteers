@@ -69,12 +69,12 @@ class WebformResultsExportOptionsTest extends WebformTestBase {
     $this->assertRaw('first_name,last_name');
 
     // Check options format compact.
-    $this->getExport($webform, ['options_format' => 'compact']);
+    $this->getExport($webform, ['options_single_format' => 'compact', 'options_multiple_format' => 'compact']);
     $this->assertRaw('"Flag colors"');
     $this->assertRaw('Red;White;Blue');
 
     // Check options format separate.
-    $this->getExport($webform, ['options_format' => 'separate']);
+    $this->getExport($webform, ['options_single_format' => 'separate', 'options_multiple_format' => 'separate']);
     $this->assertRaw('"Flag colors: Red","Flag colors: White","Flag colors: Blue"');
     $this->assertNoRaw('"Flag colors"');
     $this->assertRaw('X,X,X');
@@ -190,7 +190,7 @@ class WebformResultsExportOptionsTest extends WebformTestBase {
 
     // Check changing default export (delimiter) settings.
     $this->drupalLogin($this->rootUser);
-    $this->drupalPostForm('admin/structure/webform/settings/exporters', ['delimiter' => '|'], t('Save configuration'));
+    $this->drupalPostForm('admin/structure/webform/config/exporters', ['delimiter' => '|'], t('Save configuration'));
     $this->drupalPostForm('admin/structure/webform/manage/' . $webform->id() . '/results/download', [], t('Download'));
     $this->assertRaw('"Submission ID"|"Submission URI"');
 

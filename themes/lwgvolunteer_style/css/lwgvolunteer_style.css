@@ -255,7 +255,11 @@ a:hover {
 	height: 581px;
 }
 
-
+@media(max-width: 901px) {
+	#block-pagetitle-2 > div > h1 {
+		right:600px;
+	}
+}
 @media (min-width: 902px) {
 	#header {
 		max-height: 75px;
@@ -308,10 +312,10 @@ a:hover {
 		background: white;
 		padding: 5px 20px 20px 20px;
 		position: relative;
-		height: 700px;
+		height: 820px;
 	}
 	#block-views-block-quick-links-aggregator-view-block-1-4 {
-		height: 695px;
+		height: 820px;
 	}
 	#sidebar-first {
 		position: relative;
@@ -322,7 +326,7 @@ a:hover {
 		bottom: 10px;
 	}
 	#block-views-block-aggregators-block-10 {
-		height: 695px;
+		height: 820px;
 	}
 	#block-views-block-aggregators-block-2 {
 		background: white;

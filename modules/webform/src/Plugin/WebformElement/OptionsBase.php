@@ -36,22 +36,22 @@ abstract class OptionsBase extends WebformElementBase {
    * {@inheritdoc}
    */
   public function getDefaultProperties() {
-    $default_properties = parent::getDefaultProperties();
+    $properties = parent::getDefaultProperties();
 
     // Issue #2836374: Wrapper attributes are not supported by composite
     // elements, this includes radios, checkboxes, and buttons.
     if (preg_match('/(radios|checkboxes|buttons|tableselect|tableselect_sort|table_sort)$/', $this->getPluginId())) {
-      unset($default_properties['wrapper_attributes']);
+      unset($properties['wrapper_attributes']);
     }
 
     if (preg_match('/(tableselect|tableselect_sort|table_sort)$/', $this->getPluginId())) {
-      unset($default_properties['title_display']);
-      unset($default_properties['help']);
-      unset($default_properties['description']);
-      unset($default_properties['description_display']);
+      unset($properties['title_display']);
+      unset($properties['help']);
+      unset($properties['description']);
+      unset($properties['description_display']);
     }
 
-    $default_properties += [
+    $properties += [
       // Options settings.
       'options' => [],
       'options_randomize' => FALSE,
@@ -59,7 +59,7 @@ abstract class OptionsBase extends WebformElementBase {
 
     // Add other properties to elements that include the other text field.
     if ($this->isOptionsOther()) {
-      $default_properties += [
+      $properties += [
         'other__option_label' => $this->t('Other...'),
         'other__type' => 'textfield',
         'other__title' => '',
@@ -79,7 +79,7 @@ abstract class OptionsBase extends WebformElementBase {
       ];
     }
 
-    return $default_properties;
+    return $properties;
   }
 
   /**
@@ -95,7 +95,7 @@ abstract class OptionsBase extends WebformElementBase {
   /**
    * Get the other option base element type.
    *
-   * @return string|NULL
+   * @return string|null
    *   The base element type (select|radios|checkboxes|buttons).
    */
   protected function getOptionsOtherType() {
@@ -110,14 +110,17 @@ abstract class OptionsBase extends WebformElementBase {
       $this->otherOptionType = FALSE;
     }
 
-    return $this->otherOptionType ;
+    return $this->otherOptionType;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getTranslatableProperties() {
-    return array_merge(parent::getTranslatableProperties(), ['options', 'empty_option', 'option_label']);
+    return array_merge(
+      parent::getTranslatableProperties(),
+      ['options', 'empty_option', 'option_label']
+    );
   }
 
   /**
@@ -140,7 +143,7 @@ abstract class OptionsBase extends WebformElementBase {
    * {@inheritdoc}
    */
   public function prepare(array &$element, WebformSubmissionInterface $webform_submission = NULL) {
-    $is_wrapper_fieldset = in_array($element['#type'], ['checkboxes', 'radios', 'webform_entity_checkboxes', 'webform_entity_radios', 'webform_term_checkboxes','webform_toggles', 'webform_buttons']);
+    $is_wrapper_fieldset = in_array($element['#type'], ['checkboxes', 'radios', 'webform_entity_checkboxes', 'webform_entity_radios', 'webform_term_checkboxes', 'webform_toggles', 'webform_buttons']);
     if ($is_wrapper_fieldset) {
       // Issue #2396145: Option #description_display for webform element fieldset
       // is not changing anything.
@@ -186,6 +189,16 @@ abstract class OptionsBase extends WebformElementBase {
       $element['#options'] = WebformArrayHelper::shuffle($element['#options']);
     }
 
+    // Options description display must be set to trigger the description display.
+    if ($this->hasProperty('options_description_display') && empty($element['#options_description_display'])) {
+      $element['#options_description_display'] = $this->getDefaultProperty('options_description_display');
+    }
+
+    // Options display must be set to trigger the options display.
+    if ($this->hasProperty('options_display') && empty($element['#options_display'])) {
+      $element['#options_display'] = $this->getDefaultProperty('options_display');
+    }
+
     // If the element is #required and the #default_value is an empty string
     // we need to unset the #default_value to prevent the below error.
     // 'An illegal choice has been detected'.
@@ -225,7 +238,8 @@ abstract class OptionsBase extends WebformElementBase {
     $format = $this->getItemFormat($element);
     if ($format == 'value' && isset($element['#options'])) {
       $flattened_options = OptGroup::flattenOptions($element['#options']);
-      return WebformOptionsHelper::getOptionText($value, $flattened_options);
+      $options_description = $this->hasProperty('options_description_display');
+      return WebformOptionsHelper::getOptionText($value, $flattened_options, $options_description);
     }
     else {
       return $value;
@@ -256,7 +270,7 @@ abstract class OptionsBase extends WebformElementBase {
     }
     return $element;
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -272,7 +286,8 @@ abstract class OptionsBase extends WebformElementBase {
    */
   public function getExportDefaultOptions() {
     return [
-      'options_format' => 'compact',
+      'options_single_format' => 'compact',
+      'options_multiple_format' => 'compact',
       'options_item_format' => 'label',
     ];
   }
@@ -288,32 +303,34 @@ abstract class OptionsBase extends WebformElementBase {
 
     // Build format options with help.
     $options_format_options = [
-      'compact' => [
-        'text' => ['#markup' => $this->t('Compact; with the option values delimited by commas in one column.')],
-        'help' => ['#type' => 'webform_help', '#help' => $this->t('Compact options are more suitable for importing data into other systems.')],
-      ],
-      'separate' => [
-        'text' => ['#markup' => $this->t('Separate; with each possible option value in its own column.')],
-        'help' => ['#type' => 'webform_help', '#help' => $this->t('Separate options are more suitable for building reports, graphs, and statistics in a spreadsheet application. Ranking will be included for sortable option elements.')],
-      ],
+      'compact' => $this->t('Compact, with the option values delimited by commas in one column.') .
+        WebformOptionsHelper::DESCRIPTION_DELIMITER .
+        $this->t('Compact options are more suitable for importing data into other systems.'),
+      'separate' => $this->t('Separate, with each possible option value in its own column.') .
+        WebformOptionsHelper::DESCRIPTION_DELIMITER .
+        $this->t('Separate options are more suitable for building reports, graphs, and statistics in a spreadsheet application. Ranking will be included for sortable option elements.'),
     ];
-    /** @var \Drupal\Core\Render\RendererInterface $renderer */
-    $renderer = \Drupal::service('renderer');
-    foreach ($options_format_options as $value => $text) {
-      $options_format_options[$value] = $renderer->render($text);
-    }
-
     $form['options'] = [
       '#type' => 'details',
       '#title' => $this->t('Select menu, radio buttons, and checkboxes options'),
       '#open' => TRUE,
       '#weight' => -10,
     ];
-    $form['options']['options_format'] = [
+    $form['options']['options_single_format'] = [
       '#type' => 'radios',
-      '#title' => $this->t('Options format'),
+      '#title' => $this->t('Options single value format'),
+      '#description' => $this->t('Elements that collect a single option value include select menus, radios, and buttons.'),
       '#options' => $options_format_options,
-      '#default_value' => $export_options['options_format'],
+      '#options_description_display' => 'help',
+      '#default_value' => $export_options['options_single_format'],
+    ];
+    $form['options']['options_multiple_format'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Options multiple values format'),
+      '#description' => $this->t('Elements that collect multiple option values include multi-select, checkboxes, and toggles.'),
+      '#options' => $options_format_options,
+      '#options_description_display' => 'help',
+      '#default_value' => $export_options['options_multiple_format'],
     ];
     $form['options']['options_item_format'] = [
       '#type' => 'radios',
@@ -330,7 +347,8 @@ abstract class OptionsBase extends WebformElementBase {
    * {@inheritdoc}
    */
   public function buildExportHeader(array $element, array $options) {
-    if ($options['options_format'] == 'separate' && isset($element['#options'])) {
+    $options_format = ($element['#webform_multiple'] ? $options['options_multiple_format'] : $options['options_single_format']);
+    if ($options_format == 'separate' && isset($element['#options'])) {
       $header = [];
       foreach ($element['#options'] as $option_value => $option_text) {
         // Note: If $option_text is an array (typically a tableselect row)
@@ -349,10 +367,11 @@ abstract class OptionsBase extends WebformElementBase {
    * {@inheritdoc}
    */
   public function buildExportRecord(array $element, WebformSubmissionInterface $webform_submission, array $export_options) {
-    $value = $this->getValue($element, $webform_submission);
-
     $element_options = (isset($element['#options'])) ? $element['#options'] : [];
-    if ($export_options['options_format'] == 'separate') {
+    $options_format = ($element['#webform_multiple'] ? $export_options['options_multiple_format'] : $export_options['options_single_format']);
+    if ($options_format == 'separate') {
+      $value = $this->getRawValue($element, $webform_submission);
+
       $record = [];
       // Combine the values so that isset can be used instead of in_array().
       // http://stackoverflow.com/questions/13483219/what-is-faster-in-array-or-isset
@@ -361,7 +380,7 @@ abstract class OptionsBase extends WebformElementBase {
         $value = array_combine($value, $value);
         $deltas = ($this->exportDelta) ? array_flip(array_values($value)) : FALSE;
       }
-      // Separate multiple values (ie options).
+      // Separate multiple values (i.e. options).
       foreach ($element_options as $option_value => $option_text) {
         if ((is_array($value) && isset($value[$option_value])) || ($value == $option_value)) {
           $record[] = ($deltas) ? ($deltas[$option_value] + 1) : 'X';
@@ -442,7 +461,6 @@ abstract class OptionsBase extends WebformElementBase {
     }
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -454,7 +472,7 @@ abstract class OptionsBase extends WebformElementBase {
       if ($other_type === 'other') {
         if ($this->hasMultipleValues($element)) {
           $other_value = array_diff($value, array_keys($element['#options']));
-          return ($other_value) ? implode( ', ', $other_value) : NULL;
+          return ($other_value) ? implode(', ', $other_value) : NULL;
         }
         else {
           // Make sure other value is not valid option.
@@ -483,7 +501,7 @@ abstract class OptionsBase extends WebformElementBase {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    $form['element']['default_value']['#description'] = $this->t('The default value of the field identified by its key.');
+    $form['default']['default_value']['#description'] = $this->t('The default value of the field identified by its key.');
 
     // Issue #2836374: Wrapper attributes are not supported by composite
     // elements, this includes radios, checkboxes, and buttons.
@@ -503,9 +521,12 @@ abstract class OptionsBase extends WebformElementBase {
     $form['options']['options'] = [
       '#type' => 'webform_element_options',
       '#title' => $this->t('Options'),
+      '#options_description' => $this->hasProperty('options_description_display'),
       '#required' => TRUE,
     ];
-    $form['options']['options_display'] = [
+
+    $form['options']['options_display_container'] = $this->getFormInlineContainer();
+    $form['options']['options_display_container']['options_display'] = [
       '#title' => $this->t('Options display'),
       '#type' => 'select',
       '#options' => [
@@ -513,6 +534,14 @@ abstract class OptionsBase extends WebformElementBase {
         'two_columns' => $this->t('Two columns'),
         'three_columns' => $this->t('Three columns'),
         'side_by_side' => $this->t('Side by side'),
+      ],
+    ];
+    $form['options']['options_display_container']['options_description_display'] = [
+      '#title' => $this->t('Options description display'),
+      '#type' => 'select',
+      '#options' => [
+        'description' => $this->t('Description'),
+        'help' => $this->t('Help text'),
       ],
     ];
     $form['options']['empty_option'] = [
@@ -599,7 +628,24 @@ abstract class OptionsBase extends WebformElementBase {
       '#type' => 'textfield',
       '#title' => $this->t('Other description'),
     ];
-    $form['options_other']['other__size'] = [
+
+    $form['options_other']['other__field_container'] = $this->getFormInlineContainer();
+    $form['options_other']['other__field_container']['other__field_prefix'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Other field prefix'),
+      '#description' => $this->t('Text or code that is placed directly in front of the input. This can be used to prefix an input with a constant string. Examples: $, #, -.'),
+      '#size' => 10,
+      '#states' => $states_textfield_or_number,
+    ];
+    $form['options_other']['other__field_container']['other__field_suffix'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Other field suffix'),
+      '#description' => $this->t('Text or code that is placed directly after the input. This can be used to add a unit to an input. Examples: lb, kg, %.'),
+      '#size' => 10,
+      '#states' => $states_textfield_or_number,
+    ];
+    $form['options_other']['other__size_container'] = $this->getFormInlineContainer();
+    $form['options_other']['other__size_container']['other__size'] = [
       '#type' => 'number',
       '#title' => $this->t('Other size'),
       '#description' => $this->t('Leaving blank will use the default size.'),
@@ -607,7 +653,7 @@ abstract class OptionsBase extends WebformElementBase {
       '#size' => 4,
       '#states' => $states_textfield_or_number,
     ];
-    $form['options_other']['other__maxlength'] = [
+    $form['options_other']['other__size_container']['other__maxlength'] = [
       '#type' => 'number',
       '#title' => $this->t('Other maxlength'),
       '#description' => $this->t('Leaving blank will use the default maxlength.'),
@@ -615,21 +661,7 @@ abstract class OptionsBase extends WebformElementBase {
       '#size' => 4,
       '#states' => $states_textfield_or_number,
     ];
-    $form['options_other']['other__field_prefix'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Other field prefix'),
-      '#description' => $this->t('Text or code that is placed directly in front of the input. This can be used to prefix an input with a constant string. Examples: $, #, -.'),
-      '#size' => 10,
-      '#states' => $states_textfield_or_number,
-    ];
-    $form['options_other']['other__field_suffix'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Other field suffix'),
-      '#description' => $this->t('Text or code that is placed directly after the input. This can be used to add a unit to an input. Examples: lb, kg, %.'),
-      '#size' => 10,
-      '#states' => $states_textfield_or_number,
-    ];
-    $form['options_other']['other__rows'] = [
+    $form['options_other']['other__size_container']['other__rows'] = [
       '#type' => 'number',
       '#title' => $this->t('Other rows'),
       '#description' => $this->t('Leaving blank will use the default rows.'),
@@ -637,7 +669,9 @@ abstract class OptionsBase extends WebformElementBase {
       '#size' => 4,
       '#states' => $states_textarea,
     ];
-    $form['options_other']['other__min'] = [
+
+    $form['options_other']['other__number_container'] = $this->getFormInlineContainer();
+    $form['options_other']['other__number_container']['other__min'] = [
       '#type' => 'number',
       '#title' => $this->t('Other min'),
       '#description' => $this->t('Specifies the minimum value.'),
@@ -645,7 +679,7 @@ abstract class OptionsBase extends WebformElementBase {
       '#size' => 4,
       '#states' => $states_number,
     ];
-    $form['options_other']['other__max'] = [
+    $form['options_other']['other__number_container']['other__max'] = [
       '#type' => 'number',
       '#title' => $this->t('Other max'),
       '#description' => $this->t('Specifies the maximum value.'),
@@ -653,7 +687,7 @@ abstract class OptionsBase extends WebformElementBase {
       '#size' => 4,
       '#states' => $states_number,
     ];
-    $form['options_other']['other__step'] = [
+    $form['options_other']['other__number_container']['other__step'] = [
       '#type' => 'number',
       '#title' => $this->t('Other steps'),
       '#description' => $this->t('Specifies the legal number intervals. Leave blank to support any number interval.'),
