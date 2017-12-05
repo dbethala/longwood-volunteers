@@ -6,13 +6,13 @@ lwgvolunteer_style.mobile:
     - 1x
 lwgvolunteer_style.narrow:
   label: narrow
-  mediaQuery: 'all and (min-width: 200px) and (max-width: 768px)'
+  mediaQuery: 'all and (min-width: 200px) and (max-width: 1024px)'
   weight: 1
   multipliers:
     - 1x
 lwgvolunteer_style.wide:
   label: wide
-  mediaQuery: 'all and (min-width: 768px)'
+  mediaQuery: 'all and (min-width: 1025px)'
   weight: 2
   multipliers:
     - 1x
