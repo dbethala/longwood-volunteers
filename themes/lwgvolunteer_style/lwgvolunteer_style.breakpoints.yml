@@ -12,7 +12,7 @@ lwgvolunteer_style.narrow:
     - 1x
 lwgvolunteer_style.wide:
   label: wide
-  mediaQuery: 'all and (min-width: 1025px)'
+  mediaQuery: 'all and (min-width: 1207px)'
   weight: 2
   multipliers:
     - 1x

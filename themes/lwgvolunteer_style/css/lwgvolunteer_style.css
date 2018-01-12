@@ -1,4 +1,3 @@
-/* Global Styles */
 
 /* Responsive menu label */
 
@@ -8,6 +7,18 @@
 	padding: 20px 20px 20px 20px;
 }
 */
+/*Hide "Preivew" button" from PDF upload"*/
+
+.slick img {
+	width: 100vw;
+}
+
+.download {
+	background: #faa31b;
+}
+#content > section > div > article > div > div > div > div > div > a.preview {
+	display:none;
+}
 
 .messages.messages--info {
 	background-image: none;
@@ -469,15 +480,21 @@ a:hover {
 	}
 }
 
-@media(min-width: 1201px) {
+@media (min-width: 902px and max-width:1206px) {
+	.region.region-primary-menu {
+		position: relative;
+		bottom: 36px;
+	}
+}
+@media(min-width: 1207px) {
 	#block-pagetitle-2 > div > h1 {
 		right: 800px;
 	}
 }
-
-@media(min-width: 768px and max-width:1024px) {
+/*--- Responsive Menu ---*/
+@media(min-width:1024px and max-width:1325px) {
 	#header > div > div.region.region-primary-menu {
-		position: relative;
-		bottom: 36px;
+		position:relative;
+		bottom: 100px;
 	}
 }

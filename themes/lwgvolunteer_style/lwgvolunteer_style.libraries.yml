@@ -9,4 +9,5 @@ global-styling:
   js:
     js/pageTitle.js: {}
     js/jsLink.js: {}
+    js/menu.js: {}
 
