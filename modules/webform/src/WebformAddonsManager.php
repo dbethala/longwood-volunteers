@@ -149,6 +149,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'url' => Url::fromUri('https://www.drupal.org/project/webform_composite'),
       'category' => 'element',
     ];
+    
+    // Element: Webform Checkboxes Table.
+    $projects['webform_checkboxes_table'] = [
+      'title' => $this->t('Webform Checkboxes Table'),
+      'description' => $this->t('Displays checkboxes element in a table grid.'),
+      'url' => Url::fromUri('https://github.com/minnur/webform_checkboxes_table'),
+      'category' => 'element',
+    ];
 
     // Element: Webform Crafty Clicks.
     $projects['webform_craftyclicks'] = [
@@ -198,6 +206,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'category' => 'enhancement',
     ];
 
+    // Integration: Webform HubSpot.
+    $projects['hubspot'] = [
+      'title' => $this->t('Webform HubSpot'),
+      'description' => $this->t('Provides HubSpot leads API integration with Drupal.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/hubspot'),
+      'category' => 'integration',
+    ];
+
     // Integration: Webform iContact.
     $projects['webform_icontact'] = [
       'title' => $this->t('Webform iContact'),
@@ -219,6 +235,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'title' => $this->t('Webform Product'),
       'description' => $this->t('Links commerce products to webform elements.'),
       'url' => Url::fromUri('https://github.com/chx/webform_product'),
+      'category' => 'integration',
+    ];
+
+    // Integrations: Webform Simplenews Handler.
+    $projects['webform_simplenews_handler'] = [
+      'title' => $this->t('Webform Simplenews Handler'),
+      'description' => $this->t('Provides a Webform Handler called "Submission Newsletter" that allows to link webform submission to one or more Simplenews newsletter subscriptions.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_simplenews_handler'),
       'category' => 'integration',
     ];
 
@@ -403,6 +427,14 @@ class WebformAddonsManager implements WebformAddonsManagerInterface {
       'title' => $this->t('Webform Encrypt'),
       'description' => $this->t('Provides encryption for webform elements.'),
       'url' => Url::fromUri('https://www.drupal.org/project/webform_encrypt'),
+      'category' => 'utility',
+    ];
+
+    // Utility: Webform Ip Track.
+    $projects['webform_ip_track'] = [
+      'title' => $this->t('Webform Ip Track'),
+      'description' => $this->t('Ip Location details as custom tokens to use in webform submission values.'),
+      'url' => Url::fromUri('https://www.drupal.org/project/webform_ip_track'),
       'category' => 'utility',
     ];
 

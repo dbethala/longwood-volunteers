@@ -55,8 +55,10 @@ class WebformEntityAddForm extends BundleEntityFormBase {
       '#machine_name' => [
         'exists' => '\Drupal\webform\Entity\Webform::load',
         'source' => ['title'],
+        'label' => '<br/>' . $this->t('Machine name'),
       ],
       '#maxlength' => 32,
+      '#field_suffix' => ' (' . $this->t('Maximum @max characters', ['@max' => 32]) . ')',
       '#disabled' => (bool) $webform->id() && $this->operation != 'duplicate',
       '#required' => TRUE,
     ];
@@ -82,7 +84,7 @@ class WebformEntityAddForm extends BundleEntityFormBase {
       '#type' => 'webform_select_other',
       '#title' => $this->t('Category'),
       '#options' => $webform_storage->getCategories(),
-      '#empty_option' => '<' . $this->t('None') . '>',
+      '#empty_option' => $this->t('- None -'),
       '#default_value' => $webform->get('category'),
     ];
     $form = $this->protectBundleIdElement($form);
