@@ -1654,16 +1654,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "8.4.3",
+            "version": "8.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "793cb14c54624b4be160b78f742af44a01cc7b4e"
+                "reference": "c6585ffaea5df4ed529e2bdf4371850f8fc3b88c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/793cb14c54624b4be160b78f742af44a01cc7b4e",
-                "reference": "793cb14c54624b4be160b78f742af44a01cc7b4e",
+                "url": "https://api.github.com/repos/drupal/core/zipball/c6585ffaea5df4ed529e2bdf4371850f8fc3b88c",
+                "reference": "c6585ffaea5df4ed529e2bdf4371850f8fc3b88c",
                 "shasum": ""
             },
             "require": {
@@ -1838,7 +1838,7 @@
                 "GPL-2.0+"
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
-            "time": "2017-12-06 22:45:30"
+            "time": "2018-01-03 19:27:53"
         },
         {
             "name": "drupal/libraries",
@@ -2381,7 +2381,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drush-ops/drush/zipball/135784789fc4f4e8a149f5e16d0457a83dfb093c",
+                "url": "https://api.github.com/repos/drush-ops/drush/zipball/d2547a30e938699995f46ab18ee0ecdd14928574",
                 "reference": "13bbae0efe77e4f34238ce25d38c7a711a90b223",
                 "shasum": ""
             },
@@ -6432,7 +6432,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/Mink/zipball/808702de1a3bebbd97a9339790e313e2aa7525ee",
+                "url": "https://api.github.com/repos/minkphp/Mink/zipball/04ab7af68536ac2c80fd6c08a6fd3620d3409891",
                 "reference": "9ea1cebe3dc529ba3861d87c818f045362c40484",
                 "shasum": ""
             },

@@ -5,6 +5,7 @@ global-styling:
       css/lwgvolunteer_style.css: {}
       css/lwg_elements.css: {}
       css/fonts.css: {}
+      css/banners.css: {}
    
   js:
     js/pageTitle.js: {}
