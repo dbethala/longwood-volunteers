@@ -2,33 +2,13 @@
     "name": "drupal/drupal",
     "description": "Drupal is an open source content management platform powering millions of websites and applications.",
     "type": "project",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "require": {
-        "drupal/core": "8.*",
         "composer/installers": "^1.0.24",
-        "wikimedia/composer-merge-plugin": "^1.4",
-        "drush/drush": "dev-master",
-        "doctrine/doctrine-orm-module": "1.1",
-        "drupal/views_slideshow": "^4.6",
-        "drupal/backup_migrate": "4.x-dev",
-        "drupal/admin_toolbar": "^1.22",
-        "drupal/pdf": "1.x-dev",
-        "drupal/viewerjs": "1.x-dev",
-        "drupal/token": "^1.1",
-        "drupal/responsive_menu": "^2.5",
-        "drupal/webform": "5.x-dev"
+        "wikimedia/composer-merge-plugin": "^1.4"
     },
     "replace": {
-        "drupal/calendar": "8.*",
-        "drupal/entity": "8.*",
-        "drupal/fontyourface": "8.*",
-        "drupal/graphql": "8.*",
-        "drupal/jsonapi": "8.*",
-        "drupal/media_entity": "8.*",
-        "drupal/metatag": "8.*",
-        "drupal/search_api_solr": "8.*",
-        "drupal/slick": "8.*",
-        "drupal/superfish": "8.*"
+        "drupal/core": "^8.5"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -46,70 +26,41 @@
         ],
         "merge-plugin": {
             "include": [
-                "core/composer.json",
-                "modules/calendar/composer.json",
-                "modules/entity/composer.json",
-                "modules/fontyourface/composer.json",
-                "modules/graphql/composer.json",
-                "modules/jsonapi/composer.json",
-                "modules/media_entity/composer.json",
-                "modules/metatag/composer.json",
-                "modules/search_api_solr/composer.json",
-                "modules/slick/composer.json",
-                "modules/superfish/composer.json"
+                "core/composer.json"
             ],
-            "recurse": false,
+            "recurse": true,
             "replace": false,
             "merge-extra": false
         },
         "installer-paths": {
-            "core": [
-                "type:drupal-core"
-            ],
-            "modules/{$name}": [
-                "type:drupal-module"
-            ],
-            "profiles/contrib/{$name}": [
-                "type:drupal-profile"
-            ],
-            "themes/contrib/{$name}": [
-                "type:drupal-theme"
-            ],
-            "drush/contrib/{$name}": [
-                "type:drupal-drush"
-            ],
-            "modules/custom/{$name}": [
-                "type:drupal-custom-module"
-            ],
-            "themes/custom/{$name}": [
-                "type:drupal-custom-theme"
-            ]
+            "core": ["type:drupal-core"],
+            "modules/contrib/{$name}": ["type:drupal-module"],
+            "profiles/contrib/{$name}": ["type:drupal-profile"],
+            "themes/contrib/{$name}": ["type:drupal-theme"],
+            "drush/contrib/{$name}": ["type:drupal-drush"],
+            "modules/custom/{$name}": ["type:drupal-custom-module"],
+            "themes/custom/{$name}": ["type:drupal-custom-theme"]
         }
     },
     "autoload": {
         "psr-4": {
-            "Drupal\\Core\\Composer\\": "core/lib/Drupal/Core/Composer",
-            "Drupal\\composer_manager\\Composer\\": "modules/composer_manager/src/Composer"
+            "Drupal\\Core\\Composer\\": "core/lib/Drupal/Core/Composer"
         }
     },
     "scripts": {
         "pre-autoload-dump": "Drupal\\Core\\Composer\\Composer::preAutoloadDump",
-        "post-autoload-dump": [
-            "Drupal\\Core\\Composer\\Composer::ensureHtaccess"
-        ],
+        "post-autoload-dump": "Drupal\\Core\\Composer\\Composer::ensureHtaccess",
         "post-package-install": "Drupal\\Core\\Composer\\Composer::vendorTestCodeCleanup",
         "post-package-update": "Drupal\\Core\\Composer\\Composer::vendorTestCodeCleanup",
-        "drupal-rebuild": "Drupal\\composer_manager\\Composer\\Command::rebuild",
-        "drupal-update": "Drupal\\composer_manager\\Composer\\Command::update"
+        "drupal-phpunit-upgrade-check": "Drupal\\Core\\Composer\\Composer::upgradePHPUnit",
+        "drupal-phpunit-upgrade": "@composer update phpunit/phpunit --with-dependencies --no-progress",
+        "phpcs": "phpcs --standard=core/phpcs.xml.dist --runtime-set installed_paths $($COMPOSER_BINARY config vendor-dir)/drupal/coder/coder_sniffer --",
+        "phpcbf": "phpcbf --standard=core/phpcs.xml.dist --runtime-set installed_paths $($COMPOSER_BINARY config vendor-dir)/drupal/coder/coder_sniffer --"
     },
-    "repositories": {
-        "0": {
-            "type": "composer",
-            "url": "https://packages.drupal.org/8"
-        },
-        "drupal": {
+    "repositories": [
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         }
-    }
+    ]
 }

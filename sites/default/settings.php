@@ -717,16 +717,18 @@ $settings['container_yamls'][] = __DIR__ . '/services.yml';
 # if (file_exists(__DIR__ . '/settings.local.php')) {
 #   include __DIR__ . '/settings.local.php';
 # }
-
+/*
 $settings['trusted_host_patterns'] = array(
 	'^www\.volunteer\.longwoodgardens\.org$',
 	'^volunteer.longwoodgardens\.org$',
 	'^.+\.volunteer.longwoodgardens\.org$',
 	'54.173.96.199/',
 	'http://54.173.96.199/',
-	'http://ec2-54-173-96-199.compute-1.amazonaws.com/'
+	'http://ec2-54-173-96-199.compute-1.amazonaws.com/',
+	'18.207.244.27/',
+	'http://18.207.244.27'
 );
-
+*/
 $databases['default']['default'] = array (
   'database' => 'lwgvolunteer',
   'username' => 'root',

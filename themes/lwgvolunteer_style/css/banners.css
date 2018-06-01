@@ -1,0 +1,124 @@
+/*
+Author: David Bethala
+
+Description: This file controls the styles of the banner images and titles across the top of each main page
+
+*/
+
+/* Match the gray background of the rest of the page */
+#banner-image-vservices {
+	background: #f6f6f6;
+}
+
+#banner-image-enrichment {
+	background: #f6f6f6;
+}
+
+#banner-image-scheduling {
+	background: #f6f6f6;	
+}
+
+.page-titles {
+	position: relative;
+	background:rgba(197,221,126,0.7);
+	padding:20px;	
+}
+
+#scheduling-page-title {
+	background: rgba(132,49,120,0.7);
+	color: white;
+}
+
+#vservices-page-title {
+	background: rgba(197,221,126,0.7);	
+}
+
+#enrichment-page-title {
+	background: rgba(250,163,27,0.7);
+	color: white;	
+}
+
+/*iPhone 6, 7, 8, and X */
+@media(min-width: 375px) and (max-width: 413px) {
+	.page-titles {
+		bottom: 105px;
+	}
+	#banner-image-scheduling > img,
+	#banner-image-vservices > img, 
+	#banner-image-enrichment > img{
+		height:200px;
+	}
+	.banner-imgs {
+		height:200px;	
+	}
+}
+
+/* iPhone 6 Plus, 7 Plus, and 8 Plus */
+@media(min-width: 414px) and (max-width: 767px) {
+	.page-titles {
+		bottom:105px;
+	}
+	#banner-image-scheduling > img,
+	#banner-image-vservices > img,
+	#banner-image-enrichment > img {
+		height:200px;
+	}
+}
+
+/* iPad */
+@media(min-width: 768px) and (max-width: 1023px) {
+	.page-titles {
+		bottom: 105px;
+	}	
+	#banner-image-scheduling > img,
+	#banner-image-vservices > img,
+	#banner-image-enrichment> img {
+		height:380px;	
+	}
+	.banner-imgs {
+		height:380px;
+	}
+}
+
+@media(min-width:902px) and (max-width: 1023px){
+	#banner-image-vservices > img {
+		height: 380px;
+	}
+	#banner-image-enrichment > img {
+		height: 380px;
+	}
+	#banner-image-scheduling > img {
+		height: 380px;	
+	}
+} 
+
+/* iPad Pro */
+@media(min-width: 1024px) and (max-width: 1207px) {
+	.page-titles {
+		bottom: 120px;
+	}
+	#banner-image-vservices > img {
+		height: 420px;
+	}
+	#banner-image-enrichment > img {
+		height: 420px;
+	}
+	#banner-image-scheduling > img {
+		height: 420px;
+	}
+}
+
+@media(min-width: 1208px){
+	#banner-image-vservices > img {
+		height:450px;
+	}
+	#banner-image-enrichment > img {
+		height: 450px;
+	}
+	#banner-image-scheduling > img {
+		height: 450px;
+	}
+	.page-titles {
+		bottom:188px;
+	}
+}
