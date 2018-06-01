@@ -35,7 +35,7 @@ elements: |
     '#format_items_html': |
       <table>
       {% for item in items %}
-        <tr {% if loop.index is divisibleby(2) %}style="background-color: #ffc"{% endif %}><td>{{ item }}</td></tr>
+        <tr {% if loop.index is divisible by(2) %}style="background-color: #ffc"{% endif %}><td>{{ item }}</td></tr>
       {% endfor %}
       </table>
     '#format_items_text': |
@@ -147,6 +147,8 @@ settings:
   form_reset: false
   form_disable_autocomplete: false
   form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
   form_unsaved: false
   form_disable_back: false
   form_submit_back: false
@@ -160,6 +162,10 @@ settings:
   submission_login: false
   submission_login_message: ''
   submission_exception_message: ''
+  submission_locked_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
   wizard_progress_bar: true
   wizard_progress_pages: false
   wizard_progress_percentage: false
@@ -234,6 +240,14 @@ access:
     users: {  }
     permissions: {  }
   delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
     roles: {  }
     users: {  }
     permissions: {  }

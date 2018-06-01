@@ -90,9 +90,13 @@ class ResolveInvalidReferencesPass implements CompilerPassInterface
                 $value = array_values($value);
             }
         } elseif ($value instanceof Reference) {
+<<<<<<< HEAD
             $id = (string) $value;
 
             if ($this->container->has($id)) {
+=======
+            if ($this->container->has($value)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 return $value;
             }
             $invalidBehavior = $value->getInvalidBehavior();

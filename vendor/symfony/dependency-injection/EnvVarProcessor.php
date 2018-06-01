@@ -114,7 +114,11 @@ class EnvVarProcessor implements EnvVarProcessorInterface
                 throw new RuntimeException(sprintf('Env var "%s" maps to undefined constant "%s".', $name, $env));
             }
 
+<<<<<<< HEAD
             return constant($name);
+=======
+            return constant($env);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
 
         if ('base64' === $prefix) {

@@ -507,7 +507,11 @@ class Container implements ResettableContainerInterface
      */
     public function normalizeId($id)
     {
+<<<<<<< HEAD
         if (!is_string($id)) {
+=======
+        if (!\is_string($id)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             $id = (string) $id;
         }
         if (isset($this->normalizedIds[$normalizedId = strtolower($id)])) {

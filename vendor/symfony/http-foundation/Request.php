@@ -144,7 +144,11 @@ class Request
     public $headers;
 
     /**
+<<<<<<< HEAD
      * @var string|resource
+=======
+     * @var string|resource|false|null
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
      */
     protected $content;
 
@@ -242,6 +246,7 @@ class Request
     );
 
     /**
+<<<<<<< HEAD
      * @param array           $query      The GET parameters
      * @param array           $request    The POST parameters
      * @param array           $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
@@ -249,6 +254,15 @@ class Request
      * @param array           $files      The FILES parameters
      * @param array           $server     The SERVER parameters
      * @param string|resource $content    The raw body data
+=======
+     * @param array                $query      The GET parameters
+     * @param array                $request    The POST parameters
+     * @param array                $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array                $cookies    The COOKIE parameters
+     * @param array                $files      The FILES parameters
+     * @param array                $server     The SERVER parameters
+     * @param string|resource|null $content    The raw body data
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
      */
     public function __construct(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
     {
@@ -260,13 +274,13 @@ class Request
      *
      * This method also re-initializes all properties.
      *
-     * @param array           $query      The GET parameters
-     * @param array           $request    The POST parameters
-     * @param array           $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
-     * @param array           $cookies    The COOKIE parameters
-     * @param array           $files      The FILES parameters
-     * @param array           $server     The SERVER parameters
-     * @param string|resource $content    The raw body data
+     * @param array                $query      The GET parameters
+     * @param array                $request    The POST parameters
+     * @param array                $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array                $cookies    The COOKIE parameters
+     * @param array                $files      The FILES parameters
+     * @param array                $server     The SERVER parameters
+     * @param string|resource|null $content    The raw body data
      */
     public function initialize(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
     {
@@ -329,6 +343,7 @@ class Request
      * The information contained in the URI always take precedence
      * over the other information (server and parameters).
      *
+<<<<<<< HEAD
      * @param string          $uri        The URI
      * @param string          $method     The HTTP method
      * @param array           $parameters The query (GET) or request (POST) parameters
@@ -336,6 +351,15 @@ class Request
      * @param array           $files      The request files ($_FILES)
      * @param array           $server     The server parameters ($_SERVER)
      * @param string|resource $content    The raw body data
+=======
+     * @param string               $uri        The URI
+     * @param string               $method     The HTTP method
+     * @param array                $parameters The query (GET) or request (POST) parameters
+     * @param array                $cookies    The request cookies ($_COOKIE)
+     * @param array                $files      The request files ($_FILES)
+     * @param array                $server     The server parameters ($_SERVER)
+     * @param string|resource|null $content    The raw body data
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
      *
      * @return static
      */
@@ -557,7 +581,7 @@ class Request
      */
     public function overrideGlobals()
     {
-        $this->server->set('QUERY_STRING', static::normalizeQueryString(http_build_query($this->query->all(), null, '&')));
+        $this->server->set('QUERY_STRING', static::normalizeQueryString(http_build_query($this->query->all(), '', '&')));
 
         $_GET = $this->query->all();
         $_POST = $this->request->all();

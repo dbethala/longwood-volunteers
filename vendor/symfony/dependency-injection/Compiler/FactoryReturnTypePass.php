@@ -57,7 +57,11 @@ class FactoryReturnTypePass implements CompilerPassInterface
         }
 
         $factory = $definition->getFactory();
+<<<<<<< HEAD
         if (null === $factory || (!isset($resolveClassPassChanges[$lcId]) && null !== $definition->getClass())) {
+=======
+        if (null === $factory || (!isset($resolveClassPassChanges[$id]) && null !== $definition->getClass())) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             return;
         }
 
@@ -73,9 +77,16 @@ class FactoryReturnTypePass implements CompilerPassInterface
             }
         } else {
             if ($factory[0] instanceof Reference) {
+<<<<<<< HEAD
                 $previous[$lcId] = true;
                 $factoryDefinition = $container->findDefinition((string) $factory[0]);
                 $this->updateDefinition($container, $factory[0], $factoryDefinition, $resolveClassPassChanges, $previous);
+=======
+                $previous[$id] = true;
+                $factoryId = $container->normalizeId($factory[0]);
+                $factoryDefinition = $container->findDefinition($factoryId);
+                $this->updateDefinition($container, $factoryId, $factoryDefinition, $resolveClassPassChanges, $previous);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 $class = $factoryDefinition->getClass();
             } else {
                 $class = $factory[0];
@@ -103,7 +114,11 @@ class FactoryReturnTypePass implements CompilerPassInterface
                 }
             }
 
+<<<<<<< HEAD
             if (null !== $returnType && (!isset($resolveClassPassChanges[$lcId]) || $returnType !== $resolveClassPassChanges[$lcId])) {
+=======
+            if (null !== $returnType && (!isset($resolveClassPassChanges[$id]) || $returnType !== $resolveClassPassChanges[$id])) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 @trigger_error(sprintf('Relying on its factory\'s return-type to define the class of service "%s" is deprecated since Symfony 3.3 and won\'t work in 4.0. Set the "class" attribute to "%s" on the service definition instead.', $id, $returnType), E_USER_DEPRECATED);
             }
             $definition->setClass($returnType);

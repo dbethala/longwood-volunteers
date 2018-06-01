@@ -114,7 +114,11 @@ class ArrayInput extends Input
                     $params[] = $param.('' != $val ? '='.$this->escapeToken($val) : '');
                 }
             } else {
+<<<<<<< HEAD
                 $params[] = is_array($val) ? array_map(array($this, 'escapeToken'), $val) : $this->escapeToken($val);
+=======
+                $params[] = is_array($val) ? implode(' ', array_map(array($this, 'escapeToken'), $val)) : $this->escapeToken($val);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             }
         }
 

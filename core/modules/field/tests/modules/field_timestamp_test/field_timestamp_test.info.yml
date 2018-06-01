@@ -1,6 +1,7 @@
 name: 'Field Timestamp Test'
 type: module
 description: 'Support module for the Timestamp field item test.'
+<<<<<<< HEAD
 # core: 8.x
 package: Testing
 # version: VERSION
@@ -13,3 +14,11 @@ version: '8.5.3'
 core: '8.x'
 project: 'drupal'
 datestamp: 1524673226
+=======
+core: 8.x
+package: Testing
+version: VERSION
+dependencies:
+  - entity_test
+  - field
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931

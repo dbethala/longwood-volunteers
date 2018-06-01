@@ -56,6 +56,7 @@ class RegisterServiceSubscribersPass extends AbstractRecursivePass
         }
         $class = $value->getClass();
 
+<<<<<<< HEAD
         if (!is_subclass_of($class, ServiceSubscriberInterface::class)) {
             if (!class_exists($class, false)) {
                 throw new InvalidArgumentException(sprintf('Class "%s" used for service "%s" cannot be found.', $class, $this->currentId));
@@ -64,6 +65,16 @@ class RegisterServiceSubscribersPass extends AbstractRecursivePass
             throw new InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $this->currentId, ServiceSubscriberInterface::class));
         }
         $this->container->addObjectResource($class);
+=======
+        if (!$r = $this->container->getReflectionClass($class)) {
+            throw new InvalidArgumentException(sprintf('Class "%s" used for service "%s" cannot be found.', $class, $this->currentId));
+        }
+        if (!$r->isSubclassOf(ServiceSubscriberInterface::class)) {
+            throw new InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $this->currentId, ServiceSubscriberInterface::class));
+        }
+        $class = $r->name;
+
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         $subscriberMap = array();
         $declaringClass = (new \ReflectionMethod($class, 'getSubscribedServices'))->class;
 
@@ -85,7 +96,11 @@ class RegisterServiceSubscribersPass extends AbstractRecursivePass
                 $serviceMap[$key] = new Reference($type);
             }
 
+<<<<<<< HEAD
             $subscriberMap[$key] = new TypedReference((string) $serviceMap[$key], $type, $declaringClass, $optionalBehavior ?: ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE);
+=======
+            $subscriberMap[$key] = new TypedReference($this->container->normalizeId($serviceMap[$key]), $type, $declaringClass, $optionalBehavior ?: ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             unset($serviceMap[$key]);
         }
 

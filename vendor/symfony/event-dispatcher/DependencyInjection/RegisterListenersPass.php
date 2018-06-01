@@ -84,21 +84,38 @@ class RegisterListenersPass implements CompilerPassInterface
         }
 
         $extractingDispatcher = new ExtractingEventDispatcher();
+<<<<<<< HEAD
+
+        foreach ($container->findTaggedServiceIds($this->subscriberTag, true) as $id => $attributes) {
+            $def = $container->getDefinition($id);
+=======
 
         foreach ($container->findTaggedServiceIds($this->subscriberTag, true) as $id => $attributes) {
             $def = $container->getDefinition($id);
 
             // We must assume that the class value has been correctly filled, even if the service is created by a factory
-            $class = $container->getParameterBag()->resolveValue($def->getClass());
-            $interface = 'Symfony\Component\EventDispatcher\EventSubscriberInterface';
+            $class = $def->getClass();
 
-            if (!is_subclass_of($class, $interface)) {
-                if (!class_exists($class, false)) {
-                    throw new InvalidArgumentException(sprintf('Class "%s" used for service "%s" cannot be found.', $class, $id));
-                }
-
-                throw new InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, $interface));
+            if (!$r = $container->getReflectionClass($class)) {
+                throw new InvalidArgumentException(sprintf('Class "%s" used for service "%s" cannot be found.', $class, $id));
             }
+            if (!$r->isSubclassOf(EventSubscriberInterface::class)) {
+                throw new InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, EventSubscriberInterface::class));
+            }
+            $class = $r->name;
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
+
+            ExtractingEventDispatcher::$subscriber = $class;
+            $extractingDispatcher->addSubscriber($extractingDispatcher);
+            foreach ($extractingDispatcher->listeners as $args) {
+                $args[1] = array(new ServiceClosureArgument(new Reference($id)), $args[1]);
+                $definition->addMethodCall('addListener', $args);
+
+                if (isset($this->hotPathEvents[$args[0]])) {
+                    $container->getDefinition($id)->addTag('container.hot_path');
+                }
+            }
+<<<<<<< HEAD
             $container->addObjectResource($class);
 
             ExtractingEventDispatcher::$subscriber = $class;
@@ -111,6 +128,8 @@ class RegisterListenersPass implements CompilerPassInterface
                     $container->getDefinition($id)->addTag('container.hot_path');
                 }
             }
+=======
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             $extractingDispatcher->listeners = array();
         }
     }

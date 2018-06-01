@@ -2,8 +2,13 @@ name: 'Settings Tray'
 type: module
 description: 'Provides a sidebar to configure blocks on the page.'
 package: Core
+<<<<<<< HEAD
 # version: VERSION
 # core: 8.x
+=======
+version: VERSION
+core: 8.x
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 dependencies:
   - block
   - toolbar

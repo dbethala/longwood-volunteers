@@ -340,9 +340,30 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
     {
         if (!$class = $this->getParameterBag()->resolveValue($class)) {
             return;
+<<<<<<< HEAD
+=======
         }
         $resource = null;
 
+        try {
+            if (isset($this->classReflectors[$class])) {
+                $classReflector = $this->classReflectors[$class];
+            } elseif ($this->trackResources) {
+                $resource = new ClassExistenceResource($class, false);
+                $classReflector = $resource->isFresh(0) ? false : new \ReflectionClass($class);
+            } else {
+                $classReflector = new \ReflectionClass($class);
+            }
+        } catch (\ReflectionException $e) {
+            if ($throw) {
+                throw $e;
+            }
+            $classReflector = false;
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
+        }
+        $resource = null;
+
+<<<<<<< HEAD
         try {
             if (isset($this->classReflectors[$class])) {
                 $classReflector = $this->classReflectors[$class];
@@ -370,6 +391,21 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
             $this->classReflectors[$class] = $classReflector;
         }
 
+=======
+        if ($this->trackResources) {
+            if (!$classReflector) {
+                $this->addResource($resource ?: new ClassExistenceResource($class, false));
+            } elseif (!$classReflector->isInternal()) {
+                $path = $classReflector->getFileName();
+
+                if (!$this->inVendors($path)) {
+                    $this->addResource(new ReflectionClassResource($classReflector, $this->vendors));
+                }
+            }
+            $this->classReflectors[$class] = $classReflector;
+        }
+
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         return $classReflector ?: null;
     }
 
@@ -563,6 +599,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
         if ($this->isCompiled() && isset($this->removedIds[$id = $this->normalizeId($id)])) {
             @trigger_error(sprintf('Fetching the "%s" private service or alias is deprecated since Symfony 3.4 and will fail in 4.0. Make it public instead.', $id), E_USER_DEPRECATED);
         }
+<<<<<<< HEAD
 
         return $this->doGet($id, $invalidBehavior);
     }
@@ -571,6 +608,16 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
     {
         $id = $this->normalizeId($id);
 
+=======
+
+        return $this->doGet($id, $invalidBehavior);
+    }
+
+    private function doGet($id, $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, array &$inlineServices = array())
+    {
+        $id = $this->normalizeId($id);
+
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         if (isset($inlineServices[$id])) {
             return $inlineServices[$id];
         }
@@ -627,7 +674,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
      *
      * @throws BadMethodCallException When this ContainerBuilder is compiled
      */
-    public function merge(ContainerBuilder $container)
+    public function merge(self $container)
     {
         if ($this->isCompiled()) {
             throw new BadMethodCallException('Cannot merge on a compiled container.');
@@ -1373,16 +1420,20 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
             $value = $bag->resolveValue($value);
         }
 
+<<<<<<< HEAD
         if (is_array($value)) {
+=======
+        if (\is_array($value)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             $result = array();
             foreach ($value as $k => $v) {
-                $result[$this->resolveEnvPlaceholders($k, $format, $usedEnvs)] = $this->resolveEnvPlaceholders($v, $format, $usedEnvs);
+                $result[\is_string($k) ? $this->resolveEnvPlaceholders($k, $format, $usedEnvs) : $k] = $this->resolveEnvPlaceholders($v, $format, $usedEnvs);
             }
 
             return $result;
         }
 
-        if (!is_string($value)) {
+        if (!\is_string($value) || 38 > \strlen($value)) {
             return $value;
         }
         $envPlaceholders = $bag instanceof EnvPlaceholderParameterBag ? $bag->getEnvPlaceholders() : $this->envPlaceholders;
@@ -1456,6 +1507,21 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * {@inheritdoc}
+     */
+    public function normalizeId($id)
+    {
+        if (!\is_string($id)) {
+            $id = (string) $id;
+        }
+
+        return isset($this->definitions[$id]) || isset($this->aliasDefinitions[$id]) || isset($this->removedIds[$id]) ? $id : parent::normalizeId($id);
+    }
+
+    /**
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
      * Returns the Service Conditionals.
      *
      * @param mixed $value An array of conditionals to return
@@ -1473,6 +1539,8 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
                 $services = array_unique(array_merge($services, self::getServiceConditionals($v)));
             }
         } elseif ($value instanceof Reference && ContainerInterface::IGNORE_ON_INVALID_REFERENCE === $value->getInvalidBehavior()) {
+<<<<<<< HEAD
+=======
             $services[] = (string) $value;
         }
 
@@ -1497,6 +1565,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
                 $services = array_unique(array_merge($services, self::getInitializedConditionals($v)));
             }
         } elseif ($value instanceof Reference && ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $value->getInvalidBehavior()) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             $services[] = (string) $value;
         }
 
@@ -1504,6 +1573,33 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
     }
 
     /**
+<<<<<<< HEAD
+     * Returns the initialized conditionals.
+     *
+     * @param mixed $value An array of conditionals to return
+     *
+     * @return array An array of uninitialized conditionals
+     *
+     * @internal
+     */
+    public static function getInitializedConditionals($value)
+    {
+        $services = array();
+
+        if (is_array($value)) {
+            foreach ($value as $v) {
+                $services = array_unique(array_merge($services, self::getInitializedConditionals($v)));
+            }
+        } elseif ($value instanceof Reference && ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $value->getInvalidBehavior()) {
+            $services[] = (string) $value;
+        }
+
+        return $services;
+    }
+
+    /**
+=======
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
      * Computes a reasonably unique hash of a value.
      *
      * @param mixed $value A serializable value

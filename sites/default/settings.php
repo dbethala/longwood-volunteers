@@ -725,8 +725,16 @@ $settings['trusted_host_patterns'] = array(
 	'54.173.96.199/',
 	'http://54.173.96.199/',
 	'http://ec2-54-173-96-199.compute-1.amazonaws.com/',
+<<<<<<< HEAD
 	'18.207.244.27/',
 	'http://18.207.244.27'
+=======
+	'54.226.104.89',
+	'http://54.226.104.89',
+	'https://54.226.104.89',
+	'http://ec2-54.226.104.89.compute-1.amazonaws.com',
+	'https://ec2-54.226.104.89.compute-1.amazonaws.com'
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 );
 */
 $databases['default']['default'] = array (

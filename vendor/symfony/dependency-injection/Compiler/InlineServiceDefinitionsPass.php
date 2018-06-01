@@ -67,7 +67,11 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
             $value = clone $value;
         }
 
+<<<<<<< HEAD
         if (!$value instanceof Reference || !$this->container->hasDefinition($id = (string) $value)) {
+=======
+        if (!$value instanceof Reference || !$this->container->hasDefinition($id = $this->container->normalizeId($value))) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             return parent::processValue($value, $isRoot);
         }
 

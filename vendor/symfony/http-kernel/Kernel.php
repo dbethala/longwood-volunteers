@@ -22,6 +22,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
 use Symfony\Component\DependencyInjection\Loader\ClosureLoader;
 use Symfony\Component\Filesystem\Filesystem;
@@ -32,7 +33,10 @@ use Symfony\Component\HttpKernel\Config\EnvParametersResource;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\MergeExtensionConfigurationPass;
 use Symfony\Component\HttpKernel\DependencyInjection\AddAnnotatedClassesToCachePass;
+<<<<<<< HEAD
 use Symfony\Component\Config\Loader\GlobFileLoader;
+=======
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\ConfigCache;
@@ -67,11 +71,19 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
     private $requestStackSize = 0;
     private $resetServices = false;
 
+<<<<<<< HEAD
     const VERSION = '3.4.4';
     const VERSION_ID = 30404;
     const MAJOR_VERSION = 3;
     const MINOR_VERSION = 4;
     const RELEASE_VERSION = 4;
+=======
+    const VERSION = '3.4.6';
+    const VERSION_ID = 30406;
+    const MAJOR_VERSION = 3;
+    const MINOR_VERSION = 4;
+    const RELEASE_VERSION = 6;
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
     const EXTRA_VERSION = '';
 
     const END_OF_MAINTENANCE = '11/2020';
@@ -790,7 +802,6 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
         foreach ($this->bundles as $bundle) {
             if ($extension = $bundle->getContainerExtension()) {
                 $container->registerExtension($extension);
-                $extensions[] = $extension->getAlias();
             }
 
             if ($this->debug) {
@@ -804,6 +815,13 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
 
         $this->build($container);
 
+<<<<<<< HEAD
+=======
+        foreach ($container->getExtensions() as $extension) {
+            $extensions[] = $extension->getAlias();
+        }
+
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         // ensure these extensions are implicitly loaded
         $container->getCompilerPassConfig()->setMergePass(new MergeExtensionConfigurationPass($extensions));
     }
@@ -842,7 +860,11 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
         $dumper = new PhpDumper($container);
 
         if (class_exists('ProxyManager\Configuration') && class_exists('Symfony\Bridge\ProxyManager\LazyProxy\PhpDumper\ProxyDumper')) {
+<<<<<<< HEAD
             $dumper->setProxyDumper(new ProxyDumper(substr(hash('sha256', $cache->getPath()), 0, 7)));
+=======
+            $dumper->setProxyDumper(new ProxyDumper());
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
 
         $content = $dumper->dump(array(
@@ -852,6 +874,10 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
             'as_files' => true,
             'debug' => $this->debug,
             'inline_class_loader_parameter' => \PHP_VERSION_ID >= 70000 && !$this->loadClassCache && !class_exists(ClassCollectionLoader::class, false) ? 'container.dumper.inline_class_loader' : null,
+<<<<<<< HEAD
+=======
+            'build_time' => $container->hasParameter('kernel.container_build_time') ? $container->getParameter('kernel.container_build_time') : time(),
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         ));
 
         $rootCode = array_pop($content);
@@ -880,7 +906,11 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
             new YamlFileLoader($container, $locator),
             new IniFileLoader($container, $locator),
             new PhpFileLoader($container, $locator),
+<<<<<<< HEAD
             new GlobFileLoader($locator),
+=======
+            new GlobFileLoader($container, $locator),
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             new DirectoryLoader($container, $locator),
             new ClosureLoader($container),
         ));

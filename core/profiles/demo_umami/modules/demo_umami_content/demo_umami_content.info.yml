@@ -1,8 +1,13 @@
 name: 'Umami demo: Content'
 description: Imports the content for the Umami demo.
 type: module
+<<<<<<< HEAD
 # version: VERSION
 # core: 8.x
+=======
+version: VERSION
+core: 8.x
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 package: 'Core (Experimental)'
 dependencies:
   - field
@@ -14,9 +19,12 @@ dependencies:
   - taxonomy
   - text
   - user
+<<<<<<< HEAD
 
 # Information added by Drupal.org packaging script on 2018-04-25
 version: '8.5.3'
 core: '8.x'
 project: 'drupal'
 datestamp: 1524673226
+=======
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931

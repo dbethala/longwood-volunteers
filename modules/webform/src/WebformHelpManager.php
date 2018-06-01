@@ -277,8 +277,8 @@ class WebformHelpManager implements WebformHelpManagerInterface {
       switch ($video_display) {
         case 'dialog':
           $url = Url::fromRoute('webform.help.video', ['id' => str_replace('_', '-', $video['id'])]);
-          $image_attributes = WebformDialogHelper::getModalDialogAttributes(1000);
-          $link_attributes = WebformDialogHelper::getModalDialogAttributes(1000, $classes);
+          $image_attributes = WebformDialogHelper::getModalDialogAttributes(WebformDialogHelper::DIALOG_WIDE);
+          $link_attributes = WebformDialogHelper::getModalDialogAttributes(WebformDialogHelper::DIALOG_WIDE, $classes);
           break;
 
         case 'link':
@@ -604,7 +604,7 @@ class WebformHelpManager implements WebformHelpManagerInterface {
    * Initialize group.
    *
    * @return array
-   *   An associative array containing videos.
+   *   An associative array containing groups.
    */
   protected function initGroups() {
     return [
@@ -886,6 +886,7 @@ class WebformHelpManager implements WebformHelpManagerInterface {
 
     // Installation.
     $t_args = [
+      ':about_href' => 'https://www.drupal.org/docs/8/modules/webform',
       ':addons_href' => Url::fromRoute('webform.addons')->toString(),
       ':submodules_href' => Url::fromRoute('system.modules_list', [], ['fragment' => 'edit-modules-webform'])->toString(),
       ':libraries_href' => Url::fromRoute('webform.config.libraries')->toString(),
@@ -893,7 +894,10 @@ class WebformHelpManager implements WebformHelpManagerInterface {
     $help['installation'] = [
       'group' => 'installation',
       'title' => $this->t('Installation'),
-      'content' => $this->t('<strong>Congratulations!</strong> You have successfully installed the Webform module. Please make sure to install additional <a href=":libraries_href">third-party libraries</a>, <a href=":submodules_href">sub-modules</a> and optional <a href=":addons_href">add-ons</a>.', $t_args),
+      'content' => '<strong>' . $this->t('Congratulations!') . '</strong> ' .
+        $this->t('You have successfully installed the Webform module.') .
+        ' ' . $this->t('Learn more about the <a href=":about_href">Webform module and Drupal</a>', $t_args) . '</br>' .
+        $this->t('Please make sure to install additional <a href=":libraries_href">third-party libraries</a>, <a href=":submodules_href">sub-modules</a> and optional <a href=":addons_href">add-ons</a>.', $t_args),
       'video_id' => 'installation',
       'message_type' => 'info',
       'message_close' => TRUE,
@@ -927,34 +931,6 @@ class WebformHelpManager implements WebformHelpManagerInterface {
     ];
 
     /**************************************************************************/
-    // About.
-    /**************************************************************************/
-
-    // About: Webform.
-    $help['about_webform'] = [
-      'group' => 'about',
-      'title' => $this->t('About: Webform'),
-      'content' => $this->t('The <strong>About Webform</strong> page helps familiarize users with Webform project, issue queue & maintainer.'),
-      'video_id' => 'introduction_short',
-      'routes' => [
-        // @see /admin/structure/webform/about
-        'webform.about',
-      ],
-    ];
-
-    // About: Drupal.
-    $help['about_drupal'] = [
-      'group' => 'about',
-      'title' => $this->t('About: Webform'),
-      'content' => $this->t('The <strong>About Drupal</strong> page helps familiarize users with the Drupal community and the Drupal Association.'),
-      'video_id' => 'association',
-      'routes' => [
-        // @see /admin/structure/webform/about/drupal
-        'webform.about.drupal',
-      ],
-    ];
-
-    /**************************************************************************/
     // Forms.
     /**************************************************************************/
 
@@ -969,20 +945,6 @@ class WebformHelpManager implements WebformHelpManagerInterface {
         'entity.webform.collection',
       ],
     ];
-
-    // Templates.
-    if ($this->moduleHandler->moduleExists('webform_templates')) {
-      $help['webform_templates'] = [
-        'group' => 'forms',
-        'title' => $this->t('Templates'),
-        'content' => $this->t('The <strong>Templates</strong> page lists reusable templates that can be duplicated and customized to create new webforms.'),
-        'video_id' => 'forms',
-        'routes' => [
-          // @see /admin/structure/webform/templates
-          'entity.webform.templates',
-        ],
-      ];
-    }
 
     /**************************************************************************/
     // Addons.
@@ -1642,28 +1604,6 @@ class WebformHelpManager implements WebformHelpManagerInterface {
     // Messages.
     /**************************************************************************/
 
-    // Release.
-    $t_args = [
-      '@version' => $this->getVersion(),
-      ':href' => 'https://www.drupal.org/project/webform/releases/' . $this->getVersion(),
-    ];
-    $help['message_release'] = [
-      'group' => 'messages',
-      'title' => $this->t('Message: Release'),
-      'content' => $this->t('You have successfully updated to the @version release of the Webform module. <a href=":href">Learn more</a>', $t_args),
-      'message_type' => 'status',
-      'message_close' => TRUE,
-      'message_storage' => WebformMessage::STORAGE_STATE,
-      'access' => $this->currentUser->hasPermission('administer webform'),
-      'reset_version' => TRUE,
-      'routes' => [
-        // @see /admin/modules
-        'system.modules_list',
-        // @see /admin/reports/updates
-        'update.status',
-      ],
-    ];
-
     // Webform: Elements -- Warning.
     $help['message_webform_ui'] = [
       'group' => 'messages',
@@ -1681,6 +1621,10 @@ class WebformHelpManager implements WebformHelpManagerInterface {
         'entity.webform.edit_form',
       ],
     ];
+
+    // Let other modules provide any extra help.
+    $help += $this->moduleHandler->invokeAll('webform_help');
+    $this->moduleHandler->alter('webform_help', $help);
 
     /**************************************************************************/
 

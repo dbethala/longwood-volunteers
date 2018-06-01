@@ -36,7 +36,11 @@ final class Php70
     public static function preg_replace_callback_array(array $patterns, $subject, $limit = -1, &$count = 0)
     {
         $count = 0;
+<<<<<<< HEAD
         $result = ''.$subject;
+=======
+        $result = (string) $subject;
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         if (0 === $limit = self::intArg($limit, __FUNCTION__, 3)) {
             return $result;
         }

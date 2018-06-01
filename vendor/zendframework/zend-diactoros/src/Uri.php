@@ -296,7 +296,7 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        $new->host = $host;
+        $new->host = strtolower($host);
 
         return $new;
     }
@@ -322,7 +322,7 @@ class Uri implements UriInterface
             return clone $this;
         }
 
-        if ($port !== null && $port < 1 || $port > 65535) {
+        if ($port !== null && ($port < 1 || $port > 65535)) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid port "%d" specified; must be a valid TCP/UDP port',
                 $port
@@ -443,8 +443,13 @@ class Uri implements UriInterface
         }
 
         $this->scheme    = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
+<<<<<<< HEAD
         $this->userInfo  = isset($parts['user']) ? $parts['user'] : '';
         $this->host      = isset($parts['host']) ? $parts['host'] : '';
+=======
+        $this->userInfo  = isset($parts['user']) ? $this->filterUserInfoPart($parts['user']) : '';
+        $this->host      = isset($parts['host']) ? strtolower($parts['host']) : '';
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         $this->port      = isset($parts['port']) ? $parts['port'] : null;
         $this->path      = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
         $this->query     = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';

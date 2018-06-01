@@ -62,10 +62,30 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
         $this->graph = $container->getCompiler()->getServiceReferenceGraph();
         $this->graph->clear();
         $this->lazy = false;
+<<<<<<< HEAD
+=======
 
         foreach ($container->getAliases() as $id => $alias) {
-            $this->graph->connect($id, $alias, (string) $alias, $this->getDefinition((string) $alias), null);
+            $targetId = $this->getDefinitionId((string) $alias);
+            $this->graph->connect($id, $alias, $targetId, $this->getDefinition($targetId), null);
         }
+
+        parent::process($container);
+    }
+
+    protected function processValue($value, $isRoot = false)
+    {
+        $lazy = $this->lazy;
+
+        if ($value instanceof ArgumentInterface) {
+            $this->lazy = true;
+            parent::processValue($value->getValues());
+            $this->lazy = $lazy;
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
+
+            return $value;
+        }
+<<<<<<< HEAD
 
         parent::process($container);
     }
@@ -88,11 +108,25 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
         }
         if ($value instanceof Reference) {
             $targetDefinition = $this->getDefinition((string) $value);
+=======
+        if ($value instanceof Expression) {
+            $this->getExpressionLanguage()->compile((string) $value, array('this' => 'container'));
+
+            return $value;
+        }
+        if ($value instanceof Reference) {
+            $targetId = $this->getDefinitionId((string) $value);
+            $targetDefinition = $this->getDefinition($targetId);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 
             $this->graph->connect(
                 $this->currentId,
                 $this->currentDefinition,
+<<<<<<< HEAD
                 $this->getDefinitionId((string) $value),
+=======
+                $targetId,
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 $targetDefinition,
                 $value,
                 $this->lazy || ($targetDefinition && $targetDefinition->isLazy()),
@@ -109,6 +143,7 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
                 return $value;
             }
             $this->currentDefinition = $value;
+<<<<<<< HEAD
         }
         $this->lazy = false;
 
@@ -120,6 +155,19 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
             $this->processValue($value->getMethodCalls());
             $this->processValue($value->getConfigurator());
         }
+=======
+        }
+        $this->lazy = false;
+
+        $this->processValue($value->getFactory());
+        $this->processValue($value->getArguments());
+
+        if (!$this->onlyConstructorArguments) {
+            $this->processValue($value->getProperties());
+            $this->processValue($value->getMethodCalls());
+            $this->processValue($value->getConfigurator());
+        }
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         $this->lazy = $lazy;
 
         return $value;
@@ -134,8 +182,6 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
      */
     private function getDefinition($id)
     {
-        $id = $this->getDefinitionId($id);
-
         return null === $id ? null : $this->container->getDefinition($id);
     }
 
@@ -149,7 +195,7 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
             return;
         }
 
-        return $id;
+        return $this->container->normalizeId($id);
     }
 
     private function getExpressionLanguage()
@@ -163,11 +209,12 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
             $this->expressionLanguage = new ExpressionLanguage(null, $providers, function ($arg) {
                 if ('""' === substr_replace($arg, '', 1, -1)) {
                     $id = stripcslashes(substr($arg, 1, -1));
+                    $id = $this->getDefinitionId($id);
 
                     $this->graph->connect(
                         $this->currentId,
                         $this->currentDefinition,
-                        $this->getDefinitionId($id),
+                        $id,
                         $this->getDefinition($id)
                     );
                 }

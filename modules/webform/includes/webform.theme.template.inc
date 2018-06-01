@@ -61,7 +61,7 @@ function template_preprocess_webform_help(array &$variables) {
           '#type' => 'link',
           '#title' => t('Watch video'),
           '#url' => Url::fromRoute('webform.help.video', ['id' => str_replace('_', '-', $video_info['id'])]),
-          '#attributes' => WebformDialogHelper::getModalDialogAttributes(1000, $classes),
+          '#attributes' => WebformDialogHelper::getModalDialogAttributes(WebformDialogHelper::DIALOG_WIDE, $classes),
           '#prefix' => ' ',
         ];
         break;
@@ -307,6 +307,7 @@ function template_preprocess_webform_submission_information(array &$variables) {
   $variables['completed'] = WebformDateHelper::format($webform_submission->getCompletedTime());
   $variables['changed'] = WebformDateHelper::format($webform_submission->getChangedTime());
   $variables['sticky'] = $webform_submission->isSticky() ? t('Yes') : '';
+  $variables['locked'] = $webform_submission->isLocked() ? t('Yes') : '';
   $variables['notes'] = $webform_submission->getNotes();
 
   // @see \Drupal\Core\Field\Plugin\Field\FieldFormatter\LanguageFormatter::viewValue()
@@ -720,19 +721,6 @@ function template_preprocess_webform_composite_contact(array &$variables) {
 }
 
 /**
- * Prepares variables for creditcard composite element templates.
- *
- * Default template: webform-element-creditcard.html.twig.
- *
- * @param array $variables
- *   An associative array containing:
- *   - element: An associative array containing the properties of the element.
- */
-function template_preprocess_webform_composite_creditcard(array &$variables) {
-  _template_preprocess_webform_composite($variables);
-}
-
-/**
  * Prepares variables for link composite element templates.
  *
  * Default template: webform-element-link.html.twig.
@@ -934,8 +922,18 @@ function template_preprocess_webform_element_image_file(array &$variables) {
     }
     $variables['image'] += [
       '#uri' => $uri,
-      '#attributes' => ['class' => ['webform-image-file'], 'alt' => $file->getFilename()],
+      '#attributes' => [
+        'class' => ['webform-image-file'],
+        'alt' => $file->getFilename(),
+        'title' => $file->getFilename(),
+      ],
     ];
+
+    // For the Results table always display the file name as a tooltip.
+    if (strpos(\Drupal::routeMatch()->getRouteName(), 'webform.results_submissions') !== FALSE) {
+      $variables['attached']['library'][] = 'webform/webform.tooltip';
+      $variables['image']['#attributes']['class'][] = 'js-webform-tooltip-link';
+    }
 
     // Wrap 'image' in a link/modal.
     if ($format && $format != 'image') {

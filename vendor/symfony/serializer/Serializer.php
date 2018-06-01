@@ -108,11 +108,15 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
      */
     final public function serialize($data, $format, array $context = array())
     {
+<<<<<<< HEAD
         if (!$this->supportsEncoding($format)) {
+=======
+        if (!$this->supportsEncoding($format, $context)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             throw new NotEncodableValueException(sprintf('Serialization for the format %s is not supported', $format));
         }
 
-        if ($this->encoder->needsNormalization($format)) {
+        if ($this->encoder->needsNormalization($format, $context)) {
             $data = $this->normalize($data, $format, $context);
         }
 
@@ -124,7 +128,11 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
      */
     final public function deserialize($data, $type, $format, array $context = array())
     {
+<<<<<<< HEAD
         if (!$this->supportsDecoding($format)) {
+=======
+        if (!$this->supportsDecoding($format, $context)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             throw new NotEncodableValueException(sprintf('Deserialization for the format %s is not supported', $format));
         }
 
@@ -147,7 +155,7 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
             return $data;
         }
 
-        if (is_array($data) || $data instanceof \Traversable) {
+        if (\is_array($data) || $data instanceof \Traversable) {
             $normalized = array();
             foreach ($data as $key => $val) {
                 $normalized[$key] = $this->normalize($val, $format, $context);
@@ -156,12 +164,16 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
             return $normalized;
         }
 
-        if (is_object($data)) {
+        if (\is_object($data)) {
             if (!$this->normalizers) {
                 throw new LogicException('You must register at least one normalizer to be able to normalize objects.');
             }
 
+<<<<<<< HEAD
             throw new NotNormalizableValueException(sprintf('Could not normalize object of type %s, no supporting normalizer found.', get_class($data)));
+=======
+            throw new NotNormalizableValueException(sprintf('Could not normalize object of type %s, no supporting normalizer found.', \get_class($data)));
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
 
         throw new NotNormalizableValueException(sprintf('An unexpected value could not be normalized: %s', var_export($data, true)));
@@ -190,10 +202,17 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
      */
     public function supportsNormalization($data, $format = null/*, array $context = array()*/)
     {
+<<<<<<< HEAD
         if (func_num_args() > 2) {
             $context = func_get_arg(2);
         } else {
             if (__CLASS__ !== get_class($this)) {
+=======
+        if (\func_num_args() > 2) {
+            $context = \func_get_arg(2);
+        } else {
+            if (__CLASS__ !== \get_class($this)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
                     @trigger_error(sprintf('Method %s() will have a third `$context = array()` argument in version 4.0. Not defining it is deprecated since Symfony 3.3.', __METHOD__), E_USER_DEPRECATED);
@@ -211,10 +230,17 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
      */
     public function supportsDenormalization($data, $type, $format = null/*, array $context = array()*/)
     {
+<<<<<<< HEAD
         if (func_num_args() > 3) {
             $context = func_get_arg(3);
         } else {
             if (__CLASS__ !== get_class($this)) {
+=======
+        if (\func_num_args() > 3) {
+            $context = \func_get_arg(3);
+        } else {
+            if (__CLASS__ !== \get_class($this)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
                     @trigger_error(sprintf('Method %s() will have a fourth `$context = array()` argument in version 4.0. Not defining it is deprecated since Symfony 3.3.', __METHOD__), E_USER_DEPRECATED);
@@ -285,10 +311,17 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
      */
     public function supportsEncoding($format/*, array $context = array()*/)
     {
+<<<<<<< HEAD
         if (func_num_args() > 1) {
             $context = func_get_arg(1);
         } else {
             if (__CLASS__ !== get_class($this)) {
+=======
+        if (\func_num_args() > 1) {
+            $context = \func_get_arg(1);
+        } else {
+            if (__CLASS__ !== \get_class($this)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
                     @trigger_error(sprintf('Method %s() will have a second `$context = array()` argument in version 4.0. Not defining it is deprecated since Symfony 3.3.', __METHOD__), E_USER_DEPRECATED);
@@ -306,10 +339,17 @@ class Serializer implements SerializerInterface, NormalizerInterface, Denormaliz
      */
     public function supportsDecoding($format/*, array $context = array()*/)
     {
+<<<<<<< HEAD
         if (func_num_args() > 1) {
             $context = func_get_arg(1);
         } else {
             if (__CLASS__ !== get_class($this)) {
+=======
+        if (\func_num_args() > 1) {
+            $context = \func_get_arg(1);
+        } else {
+            if (__CLASS__ !== \get_class($this)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
                     @trigger_error(sprintf('Method %s() will have a second `$context = array()` argument in version 4.0. Not defining it is deprecated since Symfony 3.3.', __METHOD__), E_USER_DEPRECATED);

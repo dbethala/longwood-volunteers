@@ -37,6 +37,7 @@ return array(
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
+<<<<<<< HEAD
     'Drupal\\Driver\\' => array($baseDir . '/drivers/lib/Drupal/Driver'),
     'Drupal\\Core\\Composer\\' => array($baseDir . '/core/lib/Drupal/Core/Composer'),
     'Drupal\\Core\\' => array($baseDir . '/core/lib/Drupal/Core'),
@@ -63,9 +64,37 @@ return array(
     'Drupal\\Component\\Assertion\\' => array($baseDir . '/core/lib/Drupal/Component/Assertion'),
     'Drupal\\Component\\Annotation\\' => array($baseDir . '/core/lib/Drupal/Component/Annotation'),
     'Drupal\\Component\\' => array($baseDir . '/core/lib/Drupal/Component'),
+=======
+    'Grasmash\\YamlExpander\\' => array($vendorDir . '/grasmash/yaml-expander/src'),
+    'Grasmash\\Expander\\' => array($vendorDir . '/grasmash/expander/src'),
+    'Goutte\\' => array($vendorDir . '/fabpot/goutte/Goutte'),
+    'Drush\\Internal\\' => array($vendorDir . '/drush/drush/internal-copy'),
+    'Drush\\' => array($vendorDir . '/drush/drush/src'),
+    'Drupal\\composer_manager\\Composer\\' => array($baseDir . '/modules/composer_manager/src/Composer'),
+    'Drupal\\Driver\\' => array($baseDir . '/drivers/lib/Drupal/Driver', $baseDir . '/drivers/lib/Drupal/Driver'),
+    'Drupal\\Core\\Composer\\' => array($baseDir . '/core/lib/Drupal/Core/Composer'),
+    'Drupal\\Core\\' => array($baseDir . '/core/lib/Drupal/Core', $baseDir . '/core/lib/Drupal/Core'),
+    'Drupal\\Component\\' => array($baseDir . '/core/lib/Drupal/Component', $baseDir . '/core/lib/Drupal/Component'),
+    'DrupalCodeGenerator\\' => array($vendorDir . '/chi-teck/drupal-code-generator/src'),
+    'Doctrine\\ORM\\' => array($vendorDir . '/doctrine/orm/lib/Doctrine/ORM'),
+    'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
+    'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib/Doctrine/Common/Inflector'),
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
     'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib/Doctrine/Common'),
+<<<<<<< HEAD
     'Composer\\Semver\\' => array($vendorDir . '/composer/semver/src'),
     'Composer\\Installers\\' => array($vendorDir . '/composer/installers/src/Composer/Installers'),
+=======
+    'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
+    'Consolidation\\OutputFormatters\\' => array($vendorDir . '/consolidation/output-formatters/src'),
+    'Consolidation\\Log\\' => array($vendorDir . '/consolidation/log/src'),
+    'Consolidation\\Config\\' => array($vendorDir . '/consolidation/config/src'),
+    'Consolidation\\AnnotatedCommand\\' => array($vendorDir . '/consolidation/annotated-command/src'),
+    'Composer\\Semver\\' => array($vendorDir . '/composer/semver/src'),
+    'Composer\\Installers\\' => array($vendorDir . '/composer/installers/src/Composer/Installers'),
+    'Behat\\Mink\\Driver\\' => array($vendorDir . '/behat/mink-selenium2-driver/src', $vendorDir . '/behat/mink-browserkit-driver/src', $vendorDir . '/behat/mink-goutte-driver/src'),
+    'Behat\\Mink\\' => array($vendorDir . '/behat/mink/src'),
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
     'Asm89\\Stack\\' => array($vendorDir . '/asm89/stack-cors/src/Asm89/Stack'),
 );

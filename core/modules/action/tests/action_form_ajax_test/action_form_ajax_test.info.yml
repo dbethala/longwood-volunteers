@@ -2,6 +2,7 @@ name: action_form_ajax_test
 type: module
 description: 'module used for testing ajax in action config entity forms.'
 package: Core
+<<<<<<< HEAD
 # version: VERSION
 # core: 8.x
 hidden: true
@@ -11,3 +12,8 @@ version: '8.5.3'
 core: '8.x'
 project: 'drupal'
 datestamp: 1524673226
+=======
+version: VERSION
+core: 8.x
+hidden: true
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931

@@ -10,6 +10,10 @@ CHANGELOG
  * added getter for extra attributes in `ExtraAttributesException`
  * improved `CsvEncoder` to handle variable nested structures
  * CSV headers can be passed to the `CsvEncoder` via the `csv_headers` serialization context variable 
+<<<<<<< HEAD
+=======
+ * added `$context` when checking for encoding, decoding and normalizing in `Serializer`
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 
 3.3.0
 -----

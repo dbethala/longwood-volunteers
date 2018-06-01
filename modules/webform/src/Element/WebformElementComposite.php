@@ -149,7 +149,7 @@ class WebformElementComposite extends FormElement {
             '#title' => t('Type'),
             '#title_display' => 'invisible',
             '#options' => $type_options,
-            '#empty_option' => t('Select type'),
+            '#empty_option' => t('- Select type -'),
             '#required' => TRUE,
             '#attributes' => ['class' => ['js-webform-composite-type']],
           ],
@@ -228,7 +228,9 @@ class WebformElementComposite extends FormElement {
 
     $element['#attached']['library'][] = 'webform/webform.element.composite';
 
-    $element['#element_validate'] = [[get_called_class(), 'validateWebformElementComposite']];
+    // Add validate callback.
+    $element += ['#element_validate' => []];
+    array_unshift($element['#element_validate'], [get_called_class(), 'validateWebformElementComposite']);
 
     return $element;
   }
@@ -312,6 +314,8 @@ class WebformElementComposite extends FormElement {
     }
 
     $form_state->setValueForElement($element['elements'], NULL);
+
+    $element['#value'] = $elements;
     $form_state->setValueForElement($element, $elements);
   }
 

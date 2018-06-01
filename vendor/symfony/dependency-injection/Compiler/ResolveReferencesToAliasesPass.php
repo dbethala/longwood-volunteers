@@ -30,7 +30,11 @@ class ResolveReferencesToAliasesPass extends AbstractRecursivePass
         parent::process($container);
 
         foreach ($container->getAliases() as $id => $alias) {
+<<<<<<< HEAD
             $aliasId = (string) $alias;
+=======
+            $aliasId = $container->normalizeId($alias);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             if ($aliasId !== $defId = $this->getDefinitionId($aliasId, $container)) {
                 $container->setAlias($id, $defId)->setPublic($alias->isPublic())->setPrivate($alias->isPrivate());
             }
@@ -43,7 +47,11 @@ class ResolveReferencesToAliasesPass extends AbstractRecursivePass
     protected function processValue($value, $isRoot = false)
     {
         if ($value instanceof Reference) {
+<<<<<<< HEAD
             $defId = $this->getDefinitionId($id = (string) $value, $this->container);
+=======
+            $defId = $this->getDefinitionId($id = $this->container->normalizeId($value), $this->container);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 
             if ($defId !== $id) {
                 return new Reference($defId, $value->getInvalidBehavior());
@@ -69,7 +77,11 @@ class ResolveReferencesToAliasesPass extends AbstractRecursivePass
                 throw new ServiceCircularReferenceException($id, array_keys($seen));
             }
             $seen[$id] = true;
+<<<<<<< HEAD
             $id = (string) $container->getAlias($id);
+=======
+            $id = $container->normalizeId($container->getAlias($id));
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
 
         return $id;

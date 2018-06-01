@@ -26,7 +26,11 @@ class ResolveServiceSubscribersPass extends AbstractRecursivePass
 
     protected function processValue($value, $isRoot = false)
     {
+<<<<<<< HEAD
         if ($value instanceof Reference && $this->serviceLocator && ContainerInterface::class === (string) $value) {
+=======
+        if ($value instanceof Reference && $this->serviceLocator && ContainerInterface::class === $this->container->normalizeId($value)) {
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
             return new Reference($this->serviceLocator);
         }
 

@@ -29,6 +29,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 abstract class AbstractTestSessionListener implements EventSubscriberInterface
 {
+<<<<<<< HEAD
+=======
+    private $sessionId;
+
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
@@ -44,7 +49,12 @@ abstract class AbstractTestSessionListener implements EventSubscriberInterface
         $cookies = $event->getRequest()->cookies;
 
         if ($cookies->has($session->getName())) {
+<<<<<<< HEAD
             $session->setId($cookies->get($session->getName()));
+=======
+            $this->sessionId = $cookies->get($session->getName());
+            $session->setId($this->sessionId);
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
     }
 
@@ -66,9 +76,16 @@ abstract class AbstractTestSessionListener implements EventSubscriberInterface
             $session->save();
         }
 
+<<<<<<< HEAD
         if ($session instanceof Session ? !$session->isEmpty() : $wasStarted) {
             $params = session_get_cookie_params();
             $event->getResponse()->headers->setCookie(new Cookie($session->getName(), $session->getId(), 0 === $params['lifetime'] ? 0 : time() + $params['lifetime'], $params['path'], $params['domain'], $params['secure'], $params['httponly']));
+=======
+        if ($session instanceof Session ? !$session->isEmpty() || $session->getId() !== $this->sessionId : $wasStarted) {
+            $params = session_get_cookie_params();
+            $event->getResponse()->headers->setCookie(new Cookie($session->getName(), $session->getId(), 0 === $params['lifetime'] ? 0 : time() + $params['lifetime'], $params['path'], $params['domain'], $params['secure'], $params['httponly']));
+            $this->sessionId = $session->getId();
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
     }
 

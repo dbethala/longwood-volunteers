@@ -128,6 +128,7 @@ class XliffFileLoader implements LoaderInterface
         $xml->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:2.0');
 
         foreach ($xml->xpath('//xliff:unit') as $unit) {
+<<<<<<< HEAD
             $segment = $unit->segment;
             $source = $segment->source;
 
@@ -136,15 +137,38 @@ class XliffFileLoader implements LoaderInterface
             $target = $this->utf8ToCharset((string) (isset($segment->target) ? $segment->target : $source), $encoding);
 
             $catalogue->set((string) $source, $target, $domain);
+=======
+            foreach ($unit->segment as $segment) {
+                $source = $segment->source;
 
-            $metadata = array();
-            if (isset($segment->target) && $segment->target->attributes()) {
-                $metadata['target-attributes'] = array();
-                foreach ($segment->target->attributes() as $key => $value) {
-                    $metadata['target-attributes'][$key] = (string) $value;
+                // If the xlf file has another encoding specified, try to convert it because
+                // simple_xml will always return utf-8 encoded values
+                $target = $this->utf8ToCharset((string) (isset($segment->target) ? $segment->target : $source), $encoding);
+
+                $catalogue->set((string) $source, $target, $domain);
+
+                $metadata = array();
+                if (isset($segment->target) && $segment->target->attributes()) {
+                    $metadata['target-attributes'] = array();
+                    foreach ($segment->target->attributes() as $key => $value) {
+                        $metadata['target-attributes'][$key] = (string) $value;
+                    }
                 }
-            }
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
 
+                if (isset($unit->notes)) {
+                    $metadata['notes'] = array();
+                    foreach ($unit->notes->note as $noteNode) {
+                        $note = array();
+                        foreach ($noteNode->attributes() as $key => $value) {
+                            $note[$key] = (string) $value;
+                        }
+                        $note['content'] = (string) $noteNode;
+                        $metadata['notes'][] = $note;
+                    }
+                }
+
+<<<<<<< HEAD
             if (isset($unit->notes)) {
                 $metadata['notes'] = array();
                 foreach ($unit->notes->note as $noteNode) {
@@ -158,6 +182,10 @@ class XliffFileLoader implements LoaderInterface
             }
 
             $catalogue->setMetadata((string) $source, $metadata, $domain);
+=======
+                $catalogue->setMetadata((string) $source, $metadata, $domain);
+            }
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
     }
 

@@ -18,14 +18,22 @@
     },
     "require-dev": {
         "doctrine/cache": "1.*",
+<<<<<<< HEAD
         "phpunit/phpunit": "4.*"
+=======
+        "phpunit/phpunit": "^6.4"
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
     },
     "autoload": {
         "psr-0": { "Doctrine\\Common\\Annotations\\": "lib/" }
     },
     "extra": {
         "branch-alias": {
+<<<<<<< HEAD
             "dev-master": "1.3.x-dev"
+=======
+            "dev-master": "1.6.x-dev"
+>>>>>>> 9a70c99dc372ded3fe684a74ceb1086713a7c931
         }
     }
 }
