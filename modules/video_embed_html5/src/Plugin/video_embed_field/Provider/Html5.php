@@ -87,6 +87,7 @@ class Html5 extends ProviderPluginBase {
       '#src' => $this->videoUrl,
       '#type' => 'video/' . $this->videoType,
       '#autoplay' => $autoplay,
+      '#provider' => 'local_html5',
     ];
   }
 
@@ -187,7 +188,7 @@ class Html5 extends ProviderPluginBase {
    * {@inheritdoc}
    */
   public static function getIdFromInput($input) {
-    $pattern = "/\b(http|https):\/\/.*(mp4|ogg|webm)\b/";
+    $pattern = "/(?:(\/)|(?:(?|http|https|ftp)(?|\/\/))).*(mp4|ogg|webm)/i";
     $matches = array();
     preg_match($pattern, $input, $matches);
 

@@ -2,7 +2,6 @@
 
 namespace Drupal\search_api\Plugin\views\filter;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\search_api\Entity\Index;
@@ -123,11 +122,11 @@ class SearchApiFulltext extends FilterPluginBase {
   public function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['parse_mode'] = ['default' => 'terms'];
     $options['operator']['default'] = 'and';
-
-    $options['min_length']['default'] = '';
-    $options['fields']['default'] = [];
+    $options['parse_mode'] = ['default' => 'terms'];
+    $options['min_length'] = ['default' => ''];
+    $options['fields'] = ['default' => []];
+    $options['expose']['contains']['placeholder'] = ['default' => ''];
 
     return $options;
   }
@@ -142,10 +141,14 @@ class SearchApiFulltext extends FilterPluginBase {
       '#type' => 'select',
       '#title' => $this->t('Parse mode'),
       '#description' => $this->t('Choose how the search keys will be parsed.'),
-      '#options' => $this->getParseModeManager()->getInstancesOptions(),
+      '#options' => [],
       '#default_value' => $this->options['parse_mode'],
     ];
     foreach ($this->getParseModeManager()->getInstances() as $key => $mode) {
+      if ($mode->isHidden()) {
+        continue;
+      }
+      $form['parse_mode']['#options'][$key] = $mode->label();
       if ($mode->getDescription()) {
         $states['visible'][':input[name="options[parse_mode]"]']['value'] = $key;
         $form["parse_mode_{$key}_description"] = [
@@ -191,6 +194,21 @@ class SearchApiFulltext extends FilterPluginBase {
   /**
    * {@inheritdoc}
    */
+  public function buildExposeForm(&$form, FormStateInterface $form_state) {
+    parent::buildExposeForm($form, $form_state);
+
+    $form['expose']['placeholder'] = [
+      '#type' => 'textfield',
+      '#default_value' => $this->options['expose']['placeholder'],
+      '#title' => $this->t('Placeholder'),
+      '#size' => 40,
+      '#description' => $this->t('Hint text that appears inside the field when empty.'),
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   protected function valueForm(&$form, FormStateInterface $form_state) {
     parent::valueForm($form, $form_state);
 
@@ -200,6 +218,9 @@ class SearchApiFulltext extends FilterPluginBase {
       '#size' => 30,
       '#default_value' => $this->value,
     ];
+    if (!empty($this->options['expose']['placeholder'])) {
+      $form['value']['#attributes']['placeholder'] = $this->options['expose']['placeholder'];
+    }
   }
 
   /**
@@ -231,7 +252,12 @@ class SearchApiFulltext extends FilterPluginBase {
       $input = &$this->options['group_info']['group_items'][$input]['value'];
     }
 
-    if (!trim($input)) {
+    // Under some circumstances, input will be an array containing the string
+    // value. Not sure why, but just deal with that.
+    while (is_array($input)) {
+      $input = $input ? reset($input) : '';
+    }
+    if (trim($input) === '') {
       // No input was given by the user. If the filter was set to "required" and
       // there is a query (not the case when an exposed filter block is
       // displayed stand-alone), abort it.
@@ -249,7 +275,7 @@ class SearchApiFulltext extends FilterPluginBase {
 
     $words = preg_split('/\s+/', $input);
     foreach ($words as $i => $word) {
-      if (Unicode::strlen($word) < $this->options['min_length']) {
+      if (mb_strlen($word) < $this->options['min_length']) {
         unset($words[$i]);
       }
     }
@@ -275,6 +301,9 @@ class SearchApiFulltext extends FilterPluginBase {
     $fields = $this->options['fields'];
     $fields = $fields ? $fields : array_keys($this->getFulltextFields());
     $query = $this->getQuery();
+    if ($query->shouldAbort()) {
+      return;
+    }
 
     if ($this->options['parse_mode']) {
       $parse_mode = $this->getParseModeManager()

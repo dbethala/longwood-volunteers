@@ -43,10 +43,10 @@ class IframeDefaultFormatter extends FormatterBase {
   /* USE only if any further specific-Formatter-fields needed */
   /*
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $sizedescription = t('iframes need fix width and height, only numbers are allowed.');
+    $sizedescription = t('Iframes need a fixed width and height; only numbers are allowed.');
     $element['width'] = array(
       '#type' => 'textfield',
-      '#title' => t('width of an iframe'),
+      '#title' => t('Iframe Width'),
       '#default_value' => $this->getSetting('width'), # ''
       '#description' => $sizedescription,
       '#maxlength' => 4,
@@ -54,7 +54,7 @@ class IframeDefaultFormatter extends FormatterBase {
     );
     $element['height'] = array(
       '#type' => 'textfield',
-      '#title' => t('height of an iframe'),
+      '#title' => t('Iframe Height'),
       '#default_value' => $this->getSetting('height'), # ''
       '#description' => $sizedescription,
       '#maxlength' => 4,
@@ -131,9 +131,15 @@ class IframeDefaultFormatter extends FormatterBase {
     if (!empty($item->frameborder) && $item->frameborder > 0) {
         $options['frameborder'] = (int)$item->frameborder;
     }
+    else {
+        $options['frameborder'] = 0;
+    }
     $options['scrolling'] = !empty($item->scrolling) ? $item->scrolling : 'auto';
     if (!empty($item->transparency) && $item->transparency > 0) {
         $options['transparency'] = (int)$item->transparency;
+    }
+    else {
+        $options['transparency'] = 0;
     }
 
     $htmlid = '';
@@ -143,16 +149,6 @@ class IframeDefaultFormatter extends FormatterBase {
 
     // Append active class.
     $options['class'] = !empty($item->class) ? $item->class : '';
-    /*
-    if ($path == $_GET['q'] || ($path == '<front>' && drupal_is_front_page())) {
-      if (!empty($options['class'])) {
-        $options['class'] .= ' active';
-      }
-      else {
-        $options['class'] = 'active';
-      }
-    }
-    */
 
     // Remove all HTML and PHP tags from a tooltip. For best performance, we act only
     // if a quick strpos() pre-check gave a suspicion (because strip_tags() is expensive).
@@ -187,7 +183,7 @@ class IframeDefaultFormatter extends FormatterBase {
           . $drupal_attributes->__toString()
           . $htmlid
         . '>'
-        . t('Your browser does not support iframes. But You can use the following link.') . ' ' . Link::fromTextAndUrl('Link', Url::fromUri($path, $options_link))->toString()
+        . t('Your browser does not support iframes, but you can use the following link:') . ' ' . Link::fromTextAndUrl('Link', Url::fromUri($path, $options_link))->toString()
         . '</iframe>'
       . '</div>'
     ;

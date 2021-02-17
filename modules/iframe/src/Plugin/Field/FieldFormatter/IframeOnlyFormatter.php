@@ -7,7 +7,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 /**
  * @FieldFormatter(
  *  id = "iframe_only",
- *  label = @Translation("IFrame without title"),
+ *  label = @Translation("Iframe without title"),
  *  field_types = {"iframe"}
  * )
  */

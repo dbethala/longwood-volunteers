@@ -5,6 +5,7 @@ namespace Drupal\iframe\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Plugin implementation base functions.
@@ -15,7 +16,7 @@ class IframeWidgetBase extends WidgetBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-      return array(
+    return array(
       'url' => '',
       'title' => '',
       'width' => '',
@@ -33,8 +34,8 @@ class IframeWidgetBase extends WidgetBase {
   /**
    * Translate the description for iframe width/height only once
    */
-  protected function getSizedescription() {
-    return $this->t('iframes need fix width and height, only numbers are allowed.');
+  protected static function getSizedescription() {
+    return t('The iframe\'s width and height can be set in pixels as a number only ("500" for 500 pixels) or in a percentage value followed by the percent symbol (%) ("50%" for 50 percent).');
   }
 
   /**
@@ -59,18 +60,18 @@ class IframeWidgetBase extends WidgetBase {
 
     $element['width'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('width of an iframe'),
+      '#title' => $this->t('Iframe Width'),
       '#default_value' => $values['width'], # ''
-      '#description' => $this->getSizedescription(),
+      '#description' => self::getSizedescription(),
       '#maxlength' => 4,
       '#size' => 4,
       '#required' => TRUE,
     );
     $element['height'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('height of an iframe'),
+      '#title' => $this->t('Iframe Height'),
       '#default_value' => $values['height'], # ''
-      '#description' => $this->getSizedescription(),
+      '#description' => self::getSizedescription(),
       '#maxlength' => 4,
       '#size' => 4,
       '#required' => TRUE,
@@ -90,33 +91,33 @@ class IframeWidgetBase extends WidgetBase {
     $element['frameborder'] = array(
       '#type' => 'select',
       '#title' => $this->t('Frameborder'),
-      '#options' => array('0' => $this->t('no frameborder'), '1' => $this->t('show frameborder')),
+      '#options' => array('0' => $this->t('No frameborder'), '1' => $this->t('Show frameborder')),
       '#default_value' => $values['frameborder'], # 0
-      '#description' => $this->t('Frameborder is the border arround the iframe. Mostly people want it silent, so the default value for frameborder is 0 = no.'),
+      '#description' => $this->t('Frameborder is the border around the iframe. Most people want it removed, so the default value for frameborder is zero (0), or no border.'),
     );
     $element['scrolling'] = array(
       '#type' => 'select',
       '#title' => $this->t('Scrolling'),
-      '#options' => array('auto' => $this->t('Scrolling automatic'), 'no' => $this->t('Scrolling disabled'), 'yes' => $this->t('Scrolling enabled')),
+      '#options' => array('auto' => $this->t('Automatic'), 'no' => $this->t('Disabled'), 'yes' => $this->t('Enabled')),
       '#default_value' => $values['scrolling'], # 'auto'
-      '#description' => $this->t('Scrollbars help the user to reach all iframe content despite the real height of the iframe content. Please disable it only if You know what You are doing.'),
+      '#description' => $this->t('Scrollbars help the user to reach all iframe content despite the real height of the iframe content. Please disable it only if you know what you are doing.'),
     );
     $element['transparency'] = array(
       '#type' => 'select',
       '#title' => $this->t('Transparency'),
-      '#options' => array('0' => $this->t('no transparency'), '1' => t('allow transparency')),
+      '#options' => array('0' => $this->t('No transparency'), '1' => t('Allow transparency')),
       '#default_value' => $values['transparency'], # 0
-      '#description' => $this->t('Allow transparency per CSS in the outer iframe tag. You have to set background-color:transparent in Your IFrame too for the body tag!'),
+      '#description' => $this->t('Allow transparency per CSS in the outer iframe tag. You have to set background-color:transparent in your iframe body tag too!'),
     );
     $element['tokensupport'] = array(
       '#type' => 'select',
       '#title' => $this->t('Token Support'),
-      '#options' => array('0' => $this->t('no tokens allowed'), '1' => $this->t('tokens only in title field'), '2' => $this->t('tokens for title and url field')),
+      '#options' => array('0' => $this->t('No tokens allowed'), '1' => $this->t('Tokens only in title field'), '2' => $this->t('Tokens for title and URL field')),
       '#default_value' => $values['tokensupport'], # 0
-      '#description' => $this->t('Are tokens allowed for users to use in title or url field?'),
+      '#description' => $this->t('Are tokens allowed for users to use in title or URL field?'),
     );
     if (! \Drupal::moduleHandler()->moduleExists('token')) {
-      $element['tokensupport']['#description'] .= ' ' . $this->t('Attention: token module is not enabled currently!');
+      $element['tokensupport']['#description'] .= ' ' . $this->t('Attention: Token module is not currently enabled!');
     }
     return $element;
   }
@@ -170,7 +171,7 @@ class IframeWidgetBase extends WidgetBase {
         : (!empty($settings['title']) ? $settings['title'] : '');
     $element['title'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('IFrame Title'),
+      '#title' => $this->t('Iframe Title'),
       '#placeholder' => '',
       '#default_value' => $title,
       '#size' => 80,
@@ -183,22 +184,22 @@ class IframeWidgetBase extends WidgetBase {
         : (!empty($settings['url']) ? $settings['url'] : '');
     $element['url'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('IFrame URL'),
-      '#placeholder' => 'http://',
+      '#title' => $this->t('Iframe URL'),
+      '#placeholder' => 'https://',
       '#default_value' => $url,
       '#size' => 80,
       '#maxlength' => 1024,
       '#weight' => 1,
-      #'#element_validate' => array('iframe_validate_url'),
+      '#element_validate' => array(array(get_class($this), 'validateUrl')),
     );
 
     $width = (isset($item->width) && !empty($item->width)) ? $item->width
         : (isset($settings['width']) ? $settings['width'] : NULL);
     $element['width'] = array(
-      '#title' => $this->t('width of an iframe'),
+      '#title' => $this->t('Iframe Width'),
       '#type' => 'textfield',
       '#default_value' => $width,
-      '#description' => $this->getSizedescription(),
+      '#description' => self::getSizedescription(),
       '#maxlength' => 4,
       '#size' => 4,
       '#weight' => 3,
@@ -208,9 +209,9 @@ class IframeWidgetBase extends WidgetBase {
         : (isset($settings['height'])? $settings['height'] : NULL);
     $element['height'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('height of an iframe'),
+      '#title' => $this->t('Iframe Height'),
       '#default_value' => $height,
-      '#description' => $this->getSizedescription(),
+      '#description' => self::getSizedescription(),
       '#maxlength' => 4,
       '#size' => 4,
       '#weight' => 4,
@@ -253,7 +254,7 @@ class IframeWidgetBase extends WidgetBase {
     #\iframe_debug(0, 'validateWidth', $me);
     if (!empty($me['url']) && isset($me['width'])) {
       if (empty($me['width']) || !preg_match('#^(\d+\%?|auto)$#', $me['width'])) {
-        $form_state->setError($form, $this->getSizedescription());
+        $form_state->setError($form, self::getSizedescription());
       }
     }
   }
@@ -275,7 +276,32 @@ class IframeWidgetBase extends WidgetBase {
     #\iframe_debug(0, 'validateHeight', $me);
     if (!empty($me['url']) && isset($me['height'])) {
       if (empty($me['height']) || !preg_match('#^(\d+\%?|auto)$#', $me['height'])) {
-        $form_state->setError($form, $this->getSizedescription());
+        $form_state->setError($form, self::getSizedescription());
+      }
+    }
+  }
+
+
+  /**
+   * validate url
+   * @see \Drupal\Core\Form\FormValidator
+   */
+  public static function validateUrl(&$form, FormStateInterface &$form_state) {
+    $value = $form['#value'];
+    $parents = $form['#parents'];
+    $itemfield = $parents[0];
+    $iteminst = $parents[1];
+    $itemname = $parents[2];
+    $itemid = $form['#id'];
+    $node = $form_state->getUserInput();
+    $me = $node[$itemfield][$iteminst];
+    #\iframe_debug(0, 'validateUrl', $me);
+    if (!empty($me['url'])) {
+      if (!UrlHelper::isValid($me['url'])) {
+        $form_state->setError($form, t('Invalid syntax for "Iframe URL".'));
+      }
+      elseif (strpos($me['url'], '//') === 0) {
+        $form_state->setError($form, t('Drupal does not accept scheme-less URLs. Please add "https:" to your URL, this works on http-parent-pages too.'));
       }
     }
   }

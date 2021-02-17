@@ -1,9 +1,8 @@
 <?php
 
-namespace Drupal\metatag_google_cse\Tests;
+namespace Drupal\Tests\metatag_google_cse\Functional;
 
-use Drupal\simpletest\WebTestBase;
-use Drupal\metatag\Tests\MetatagTagsTestBase;
+use Drupal\Tests\metatag\Functional\MetatagTagsTestBase;
 
 /**
  * Tests that each of the Metatag Google CSE tags work correctly.
@@ -15,18 +14,13 @@ class MetatagGoogleCSETagsTest extends MetatagTagsTestBase {
   /**
    * {@inheritdoc}
    */
-  public $tags = [
+  private $tags = [
     'audience',
     'department',
     'doc_status',
     'google_rating',
     'thumbnail',
   ];
-
-  /**
-   * The attribute to look for to indicate which tag.
-   */
-  // public $test_name_attribute = 'property';
 
   /**
    * {@inheritdoc}
@@ -37,9 +31,9 @@ class MetatagGoogleCSETagsTest extends MetatagTagsTestBase {
   }
 
   /**
-   * Implements {meta_tag_name}_test_tag_name() for 'google_rating'.
+   * Implements {tag_name}TestTagName() for 'google_rating'.
    */
-  public function google_rating_test_tag_name() {
+  private function googleRatingTestTagName() {
     return 'rating';
   }
 

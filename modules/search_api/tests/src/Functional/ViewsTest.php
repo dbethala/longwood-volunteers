@@ -31,7 +31,6 @@ class ViewsTest extends SearchApiBrowserTestBase {
   public static $modules = [
     'block',
     'language',
-    'rest',
     'search_api_test_views',
     'views_ui',
   ];
@@ -198,6 +197,24 @@ class ViewsTest extends SearchApiBrowserTestBase {
     $this->checkResults($query, [1, 2, 4, 5], 'Search with Keywords "not empty" filter');
 
     $query = [
+      'name[value]' => 'foo',
+    ];
+    $this->checkResults($query, [1, 2, 4], 'Search with Name "contains" filter');
+    $query = [
+      'name[value]' => 'foo',
+      'name_op' => '!=',
+    ];
+    $this->checkResults($query, [3, 5], 'Search with Name "doesn\'t contain" filter');
+    $query = [
+      'name_op' => 'empty',
+    ];
+    $this->checkResults($query, [], 'Search with Name "empty" filter');
+    $query = [
+      'name_op' => 'not empty',
+    ];
+    $this->checkResults($query, [1, 2, 3, 4, 5], 'Search with Name "not empty" filter');
+
+    $query = [
       'language' => ['***LANGUAGE_site_default***'],
     ];
     $this->checkResults($query, [1, 2, 3, 4, 5], 'Search with "Page content language" filter');
@@ -234,6 +251,9 @@ class ViewsTest extends SearchApiBrowserTestBase {
     // "Type" doesn't have "break_phrase" enabled, so the second argument won't
     // have any effect.
     $this->checkResults([], [2, 4, 5], 'Search with arguments', 'all/item+article/strawberry+apple');
+
+    // Check "OR" contextual filters (using commas).
+    $this->checkResults([], [4], 'Search with OR arguments', 'all/item,article/strawberry,apple');
 
     $this->checkResults([], [], 'Search with unknown datasource argument', 'entity:foobar/all/all');
 
@@ -387,11 +407,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
     for ($i = 0; $i < 3; ++$i) {
       // Flush the page-level caches to make sure the Views cache plugin is
       // used (so we could reproduce the bug if it's there).
-      // @todo Remove "cache.render" once we depend on Drupal 8.4+.
-      \Drupal::getContainer()->get('cache.render')->deleteAll();
-      if (\Drupal::getContainer()->has('cache.page')) {
-        \Drupal::getContainer()->get('cache.page')->deleteAll();
-      }
+      \Drupal::getContainer()->get('cache.page')->deleteAll();
       \Drupal::getContainer()->get('cache.dynamic_page_cache')->deleteAll();
       $this->submitForm([], 'Search');
       $this->assertSession()->addressEquals('search-api-test');
@@ -650,6 +666,19 @@ class ViewsTest extends SearchApiBrowserTestBase {
     $this->submitForm($edit, 'Expose filter');
     $this->submitPluginForm([]);
 
+    // Add a "Search: Fulltext search" filter.
+    $this->clickLink('Add filter criteria');
+    $edit = [
+      'name[search_api_index_database_search_index.search_api_fulltext]' => 'search_api_index_database_search_index.search_api_fulltext',
+    ];
+    $this->submitForm($edit, 'Add and configure filter criteria');
+    $this->assertSession()->pageTextNotContains('No UI parse mode');
+    $edit = [
+      'options[expose_button][checkbox][checkbox]' => 1,
+    ];
+    $this->submitForm($edit, 'Expose filter');
+    $this->submitPluginForm([]);
+
     // Save the view.
     $this->submitForm([], 'Save');
     $this->assertSession()->statusCodeEquals(200);
@@ -710,21 +739,18 @@ class ViewsTest extends SearchApiBrowserTestBase {
       }
     }
 
-    // Check whether the expected retrieved properties were listed on the page.
-    // Since the fields with the "field_rendering" option enabled will need the
-    // complete loaded entity, these are only present as "_object" here.
+    // Check whether the expected retrieved fields were listed on the page.
+    // These are only "keywords" and "rendered_item", since only fields that
+    // correspond to an indexed field are included (not when a field is added
+    // via the datasource table), and only if "Use entity field rendering" is
+    // disabled.
     // @see search_api_test_views_search_api_query_alter()
-    $retrieved_properties = [
-      Utility::createCombinedId($datasource_id, 'id'),
-      Utility::createCombinedId($datasource_id, '_object'),
-      Utility::createCombinedId($datasource_id, 'keywords'),
-      Utility::createCombinedId($datasource_id, 'user_id'),
-      Utility::createCombinedId($datasource_id, 'user_id:entity:_object'),
-      Utility::createCombinedId($datasource_id, 'user_id:entity:roles'),
-      Utility::createCombinedId(NULL, 'rendered_item'),
+    $retrieved_fields = [
+      'keywords',
+      'rendered_item',
     ];
-    foreach ($retrieved_properties as $combined_property_path) {
-      $this->assertSession()->pageTextContains("'$combined_property_path'");
+    foreach ($retrieved_fields as $field_id) {
+      $this->assertSession()->pageTextContains("'$field_id'");
     }
 
     // Check that click-sorting works correctly.
@@ -892,6 +918,29 @@ class ViewsTest extends SearchApiBrowserTestBase {
     $this->submitForm($edit, 'Add and configure contextual filters');
     $this->submitForm([], 'Apply');
     $this->submitForm([], 'Save');
+  }
+
+  /**
+   * Checks whether highlighting of results works correctly.
+   *
+   * @see views.view.search_api_test_cache.yml
+   */
+  public function testHighlighting() {
+    // Add the Highlight processor to the search index.
+    $index = Index::load('database_search_index');
+    $processor = $this->container
+      ->get('search_api.plugin_helper')
+      ->createProcessorPlugin($index, 'highlight');
+    $index->addProcessor($processor);
+    $index->save();
+
+    $path = 'search-api-test-search-view-caching-none';
+    $this->drupalGet($path);
+    $this->assertSession()->responseContains('foo bar baz');
+
+    $options['query']['search_api_fulltext'] = 'foo';
+    $this->drupalGet($path, $options);
+    $this->assertSession()->responseContains('<strong>foo</strong> bar baz');
   }
 
   /**

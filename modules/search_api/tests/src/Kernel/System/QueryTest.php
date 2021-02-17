@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\search_api\Kernel\System;
 
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Entity\Server;
@@ -47,12 +48,7 @@ class QueryTest extends KernelTestBase {
     $this->installSchema('search_api', ['search_api_item']);
     $this->installEntitySchema('entity_test_mulrev_changed');
     $this->installEntitySchema('search_api_task');
-
-    // Set tracking page size so tracking will work properly.
-    \Drupal::configFactory()
-      ->getEditable('search_api.settings')
-      ->set('tracking_page_size', 100)
-      ->save();
+    $this->installConfig('search_api');
 
     // Create a test server.
     $server = Server::create([
@@ -107,18 +103,20 @@ class QueryTest extends KernelTestBase {
     $this->assertEquals($level, $query->getProcessingLevel());
     $query->addTag('andrew_hill');
 
-    $_SESSION['messages']['status'] = [];
+    \Drupal::messenger()->deleteAll();
     $query->execute();
-    $messages = $_SESSION['messages']['status'];
-    $_SESSION['messages']['status'] = [];
+    $messages = \Drupal::messenger()->all();
+    \Drupal::messenger()->deleteAll();
 
     $methods = $this->getCalledMethods('processor');
     if ($hooks_and_processors_invoked) {
       $expected = [
-        'Funky blue note',
-        'Search id: ',
-        'Stepping into tomorrow',
-        'Llama',
+        MessengerInterface::TYPE_STATUS => [
+          'Funky blue note',
+          'Search id: ',
+          'Stepping into tomorrow',
+          'Llama',
+        ],
       ];
       $this->assertEquals($expected, $messages);
       $this->assertTrue($query->getOption('tag query alter hook'));
@@ -223,6 +221,33 @@ class QueryTest extends KernelTestBase {
 
     $query = $this->index->query()->setSearchId('search_api_test');
     $this->assertInstanceOf('Drupal\search_api_test\Plugin\search_api\display\TestDisplay', $query->getDisplayPlugin());
+  }
+
+  /**
+   * Tests the getOriginalQuery() method.
+   */
+  public function testGetOriginalQuery() {
+    $this->getCalledMethods('backend');
+
+    $query = $this->index->query()
+      ->addCondition('search_api_id', 2, '<>');
+    $query_clone_1 = $query->getOriginalQuery();
+    $this->assertEquals($query, $query_clone_1);
+    $this->assertNotSame($query, $query_clone_1);
+
+    $query->sort('search_api_id');
+    $query_clone_2 = clone $query;
+    $query->execute();
+    $methods = $this->getCalledMethods('backend');
+    $this->assertEquals(['search'], $methods);
+    $this->assertFalse($query_clone_1->hasExecuted());
+
+    $original_query = $query->getOriginalQuery();
+    $this->assertEquals($query_clone_2, $original_query);
+    $this->assertFalse($original_query->hasExecuted());
+    $original_query->execute();
+    $methods = $this->getCalledMethods('backend');
+    $this->assertEquals(['search'], $methods);
   }
 
 }

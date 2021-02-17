@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Defines an iframe field with all attributes
+ * Defines an iframe field with all attributes.
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -57,9 +57,9 @@ function iframe_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<dt>' . t('Managing and displaying iframe fields') . '</dt>';
       $output .= '<dd>' . t('The <em>settings</em> and the <em>display</em> of the iframe field can be configured separately. See the <a href=":field_ui">Field UI help</a> for more information on how to manage fields and their display.', array(':field_ui' => (\Drupal::moduleHandler()->moduleExists('field_ui')) ? Url::fromRoute('help.page', array('name' => 'field_ui'))->toString() : '#')) . '</dd>';
       $output .= '<dt>' . t('Adding attributes to iframes') . '</dt>';
-      $output .= '<dd>' . t('You can add attributes to iframes, by changing the <em>Format settings</em> in the <em>Manage display</em> page. Further definable are attributes for styling the iframe, like: url, width, height, title, class, frameborder, scrolling and transparency.') . '</dd>';
+      $output .= '<dd>' . t('You can add attributes to iframes, by changing the <em>Format settings</em> in the <em>Manage display</em> page. Further definable are attributes for styling the iframe, like: URL, width, height, title, class, frameborder, scrolling and transparency.') . '</dd>';
       $output .= '<dt>' . t('Validating URLs') . '</dt>';
-      $output .= '<dd>' . t('All urls are validated after a iframe field is filled in. They can include anchors or query strings.') . '</dd>';
+      $output .= '<dd>' . t('All URLs are validated after a iframe field is filled in. They can include anchors or query strings.') . '</dd>';
       $output .= '</dl>';
       return $output;
   }

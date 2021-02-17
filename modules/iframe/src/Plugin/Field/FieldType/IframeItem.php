@@ -17,7 +17,7 @@ use Drupal\Component\Utility\Random;
  * @FieldType(
  *   id = "iframe",
  *   label = @Translation("Iframe"),
- *   description = @Translation("The IFrame module defines an iframe field type for the Field module. Further definable are attributes for styling the iframe, like: url, width, height, title, class, frameborder, scrolling and transparency."),
+ *   description = @Translation("The Iframe module defines an iframe field type for the Field module. Further definable are attributes for styling the iframe, like: URL, width, height, title, class, frameborder, scrolling and transparency."),
  *   default_widget = "iframe_urlwidthheight",
  *   default_formatter = "iframe_default"
  * )
@@ -90,7 +90,7 @@ class IframeItem extends FieldItemBase {
           'default' => '',
         ),
         'title' => array(
-          'description' => 'The iframe TITLE text.',
+          'description' => 'The iframe title text.',
           'type' => 'varchar',
           'length' => 255,
           'not null' => FALSE,
@@ -98,49 +98,49 @@ class IframeItem extends FieldItemBase {
           'default' => '',
         ),
         'class' => array(
-          'description' => 'When output, this iframe will have this css CLASS attribute. Multiple classes should be separated by spaces.',
+          'description' => 'When output, this iframe will have this CSS class attribute. Multiple classes should be separated by spaces.',
           'type' => 'varchar',
           'length' => '255',
           'not null' => FALSE,
           'default' => '',
         ),
         'width' => array(
-          'description' => 'The iframe WIDTH.',
+          'description' => 'The iframe width.',
           'type' => 'varchar',
           'length' => 4,
           'not null' => FALSE,
           'default' => '600',
         ),
         'height' => array(
-          'description' => 'The iframe HEIGHT.',
+          'description' => 'The iframe height.',
           'type' => 'varchar',
           'length' => 4,
           'not null' => FALSE,
           'default' => '800',
         ),
         'frameborder' => array(
-          'description' => 'Frameborder is the border arround the iframe. Mostly people want it silent, so the default value for frameborder is 0 = no.',
+          'description' => 'Frameborder is the border around the iframe. Most people want it removed, so the default value for frameborder is zero (0), or no border.',
           'type' => 'int',
           'size' => 'tiny',
           'not null' => TRUE,
           'default' => 0,
         ),
         'scrolling' => array(
-          'description' => 'Scrollbars help the user to reach all iframe content despite the real height of the iframe content. Please disable it only if You know what You are doing.',
+          'description' => 'Scrollbars help the user to reach all iframe content despite the real height of the iframe content. Please disable it only if you know what you are doing.',
           'type' => 'varchar',
           'length' => 4,
           'not null' => TRUE,
           'default' => 'auto',
         ),
         'transparency' => array(
-          'description' => 'Allow transparency per CSS in the outer iframe tag. You have to set background-color:transparent in Your IFrame too for the body tag!',
+          'description' => 'Allow transparency per CSS in the outer iframe tag. You have to set background-color:transparent in your iframe body tag too!',
           'type' => 'int',
           'size' => 'tiny',
           'not null' => TRUE,
           'default' => 0,
         ),
         'tokensupport' => array(
-          'description' => 'Are tokens allowed for users to use in title or url field?',
+          'description' => 'Are tokens allowed for users to use in title or URL field?',
           'type' => 'int',
           'size' => 'tiny',
           'not null' => TRUE,
@@ -171,8 +171,8 @@ class IframeItem extends FieldItemBase {
       '#title' => $this->t('Frameborder'),
       '#default_value' => $settings['frameborder'], # '0'
       '#options' => array(
-        '0' => $this->t('no frameborder'),
-        '1' => $this->t('show frameborder'),
+        '0' => $this->t('No frameborder'),
+        '1' => $this->t('Show frameborder'),
       ),
     );
 
@@ -181,9 +181,9 @@ class IframeItem extends FieldItemBase {
       '#title' => $this->t('Scrolling'),
       '#default_value' => $settings['scrolling'], # 'auto'
       '#options' => array(
-        'auto' => $this->t('Scrolling automatic'),
-        'no' => $this->t('Scrolling disabled'),
-        'yes' => $this->t('Scrolling enabled'),
+        'auto' => $this->t('Automatic'),
+        'no' => $this->t('Disabled'),
+        'yes' => $this->t('Enabled'),
       )
     );
 
@@ -192,10 +192,10 @@ class IframeItem extends FieldItemBase {
       '#title' => $this->t('Transparency'),
       '#default_value' => $settings['transparency'], # '0'
       '#options' => array(
-        '0' => $this->t('no transparency'),
-        '1' => $this->t('allow transparency'),
+        '0' => $this->t('No transparency'),
+        '1' => $this->t('Allow transparency'),
       ),
-      '#description' => $this->t('Allow transparency per CSS in the outer iframe tag. You have to set background-color:transparent in Your IFrame too for the body tag!'),
+      '#description' => $this->t('Allow transparency per CSS in the outer iframe tag. You have to set background-color:transparent in your iframe body tag too!'),
     );
 
     $element['tokensupport'] = array(
@@ -203,14 +203,14 @@ class IframeItem extends FieldItemBase {
       '#title' => $this->t('Token Support'),
       '#default_value' => $settings['tokensupport'], # '0'
       '#options' => array(
-        '0' => $this->t('no tokens allowed'),
-        '1' => $this->t('tokens only in title field'),
-        '2' => $this->t('tokens for title and url field'),
+        '0' => $this->t('No tokens allowed'),
+        '1' => $this->t('Tokens only in title field'),
+        '2' => $this->t('Tokens for title and URL field'),
       ),
-      '#description' => $this->t('Are tokens allowed for users to use in title or url field?'),
+      '#description' => $this->t('Are tokens allowed for users to use in title or URL field?'),
     );
     if (! \Drupal::moduleHandler()->moduleExists('token')) {
-      $element['tokensupport']['#description'] .= ' ' . t('Attention: token module is not enabled currently!');
+      $element['tokensupport']['#description'] .= ' ' . t('Attention: Token module is not currently enabled!');
     }
 
     return $element;
@@ -238,7 +238,7 @@ class IframeItem extends FieldItemBase {
         $values['title'] = mt_rand(0,1) ? $random->sentences(4) : '';
         break;
     }
-    $values['url'] = 'http://www.' . $random->word($domain_length) . '.' . $tlds[mt_rand(0, (sizeof($tlds)-1))];
+    $values['url'] = 'https://www.' . $random->word($domain_length) . '.' . $tlds[mt_rand(0, (sizeof($tlds)-1))];
     return $values;
   }
 

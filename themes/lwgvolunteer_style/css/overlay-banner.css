@@ -1,0 +1,65 @@
+/*#block-views-block-slick-carousel-block-2-3 > div.content > div > div > div.view-content > div > ul > li > div > span > div > div:nth-child(2) {
+	bottom: 20px;
+	position: absolute;
+	left: 60px;
+	color: white;
+}
+
+#block-views-block-slick-carousel-block-2-3 > div.content > div > div > div.view-content > div > ul > li > div > span > div > div:nth-child(2) > h1 {
+	color: white;
+	font-size: 3.0rem;
+}
+
+i#block-views-block-slick-carousel-block-2-3 > div.content > div > div > div.view-content > div > ul > li > div > span > div > div.banner-img {
+	filter: brightness(0.5);
+}*/
+
+.banner-img img {
+	filter: brightness(0.7);
+}
+
+.overlay-body {
+	position:absolute;
+	color: white;
+}
+
+.overlay-body .title, .overlay-body-text a {
+	color: white;
+}
+
+@media (min-width:1200px) {
+	.overlay-body {
+		bottom:120px;
+		left: 90px;
+	}
+	.overlay-body .title {
+		font-size: 3.5rem;
+	}
+	#overlay-home-body {
+		top: 250px;
+		left: 90px
+	}
+
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+	.overlay-body {
+		bottom: 50px;
+		left: 60px;
+	}
+	.overlay-body .title {
+		font-size: 3.5rem;
+	}
+}
+@media (max-width: 767px) {
+	.overlay-body {
+		bottom: 40px;
+		left: 20px;
+	}
+	.overlay-body .title {
+		font-size: 1.5rem;
+	}
+	.overlay-body-text p {
+		font-size: 0.8rem
+	}
+}

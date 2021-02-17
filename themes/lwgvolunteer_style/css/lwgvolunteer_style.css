@@ -128,7 +128,7 @@
 }
 
 a:hover {
-	color: black;
+	color: #37bdff;
 	border-bottom-style: none;
 }
 
@@ -312,9 +312,8 @@ a:hover {
 	#block-horizontalmenu-3 {
 		position: relative;
 		float: right;
-		bottom: 90px;
 		left: 0px;
-	}
+	}	
 	#block-horizontalmenu-3 > div > nav {
 		font-size: 1.4rem;
 	}
@@ -336,7 +335,7 @@ a:hover {
 		bottom: 10px;
 	}
 	#block-views-block-aggregators-block-10 {
-		height: 820px;
+		height: auto;
 	}
 	#block-views-block-aggregators-block-2 {
 		background: white;
@@ -480,8 +479,8 @@ a:hover {
 	}
 }
 
-@media (min-width: 902px and max-width:1206px) {
-	.region.region-primary-menu {
+@media (min-width: 902px) {
+	#block-responsivemenumobileicon-3 {
 		position: relative;
 		bottom: 36px;
 	}
@@ -498,3 +497,16 @@ a:hover {
 		bottom: 100px;
 	}
 }
+
+@media(min-width:902px) and (max-width:1206px) {
+	#block-horizontalmenu-3 {
+		bottom: 90px;
+	}
+}
+@media(min-width:1207px) {
+	#block-horizontalmenu-3 {
+		bottom: 70px;
+	}
+}
+
+

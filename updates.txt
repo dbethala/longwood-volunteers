@@ -1,0 +1,37 @@
+ Name                           Installe  Proposed  Message                                                           
+                                d         version                                                                     
+                                Version                                                                               
+ Drupal                         8.5.3     8.5.5     Update available                                                  
+ Admin Toolbar (admin_toolbar)  8.x-1.22  8.x-1.24  Update available                                                  
+ @fontyourface (fontyourface)   8.x-3.1   8.x-3.2   Update available                                                  
+ Calendar (calendar)            8.x-1.x-  8.x-1.x-  Update available                                                  
+                                dev       dev                                                                         
+ Display Suite (ds)             8.x-2.7   8.x-3.1   SECURITY UPDATE available                                         
+ Entity (entity)                8.x-1.0-  8.x-1.0-  Update available                                                  
+                                beta1     beta4                                                                       
+ External Links (extlink)       8.x-1.0   8.x-1.1   Update available                                                  
+ Iframe (iframe)                8.x-1.7   8.x-1.9   Update available                                                  
+ Media entity (media_entity)    8.x-1.6   8.x-1.7   Update available                                                  
+ Metatag (metatag)              8.x-1.3   8.x-1.5   Update available                                                  
+ Responsive menu                8.x-2.5   8.x-2.6   Update available                                                  
+ (responsive_menu)                                                                                                    
+ Search API (search_api)        8.x-1.5   8.x-1.8   Update available                                                  
+ Solr search (search_api_solr)  8.x-1.1   8.x-1.2   Update available                                                  
+ Sitemap (sitemap)              8.x-1.3   8.x-1.4   Update available                                                  
+ SMTP Authentication Support    8.x-1.0-  8.x-1.0-  Update available                                                  
+ (smtp)                         beta3     beta4                                                                       
+ Superfish (superfish)          8.x-1.1   8.x-1.2   Update available                                                  
+ Token (token)                  8.x-1.1   8.x-1.3   Update available                                                  
+ Views Slideshow                8.x-4.5   8.x-4.6   Update available                                                  
+ (views_slideshow)                                                                                                    
+ Backup and Migrate             Unknown   Unknown   Project was not packaged by drupal.org but obtained from git. You 
+ (backup_migrate)                                   need to enable git_deploy module                                  
+ Libraries (libraries)          Unknown   Unknown   Project was not packaged by drupal.org but obtained from git. You 
+                                                    need to enable git_deploy module                                  
+ PDF (pdf)                      Unknown   Unknown   Project was not packaged by drupal.org but obtained from git. You 
+                                                    need to enable git_deploy module                                  
+ ViewerJS (viewerjs)            Unknown   Unknown   Project was not packaged by drupal.org but obtained from git. You 
+                                                    need to enable git_deploy module                                  
+ Webform (webform)              Unknown   Unknown   Project was not packaged by drupal.org but obtained from git. You 
+                                                    need to enable git_deploy module                                  
+

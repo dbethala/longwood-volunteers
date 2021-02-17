@@ -1,9 +1,8 @@
 <?php
 
-namespace Drupal\metatag_dc\Tests;
+namespace Drupal\Tests\metatag_dc\Functional;
 
-use Drupal\simpletest\WebTestBase;
-use Drupal\metatag\Tests\MetatagTagsTestBase;
+use Drupal\Tests\metatag\Functional\MetatagTagsTestBase;
 
 /**
  * Tests that each of the Dublin Core tags work correctly.
@@ -15,7 +14,7 @@ class MetatagDublinCoreTagsTest extends MetatagTagsTestBase {
   /**
    * {@inheritdoc}
    */
-  public $tags = [
+  private $tags = [
     'dcterms_contributor',
     'dcterms_coverage',
     'dcterms_creator',
@@ -44,7 +43,7 @@ class MetatagDublinCoreTagsTest extends MetatagTagsTestBase {
   /**
    * Each of these meta tags has a different tag name vs its internal name.
    */
-  public function getTestTagName($tag_name) {
+  private function getTestTagName($tag_name) {
     return str_replace('_', '.', $tag_name);
   }
 

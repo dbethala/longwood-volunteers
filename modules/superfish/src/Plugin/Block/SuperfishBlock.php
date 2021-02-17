@@ -6,6 +6,9 @@ use Drupal\system\Plugin\Block\SystemMenuBlock;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Menu\MenuActiveTrailInterface;
+use Drupal\Core\Menu\MenuLinkTreeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a "Superfish" block.
@@ -19,6 +22,45 @@ use Drupal\Component\Utility\Html;
  * )
  */
 class SuperfishBlock extends SystemMenuBlock {
+
+  /**
+   * The active menu trail service.
+   *
+   * @var \Drupal\Core\Menu\MenuActiveTrailInterface
+   */
+  protected $menuActiveTrail;
+
+  /**
+   * Constructs a new SuperfishBlock.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param array $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Menu\MenuLinkTreeInterface $menu_tree
+   *   The menu tree service.
+   * @param \Drupal\Core\Menu\MenuActiveTrailInterface $menu_active_trail
+   *   The active menu trail service.
+   */
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, MenuLinkTreeInterface $menu_tree, MenuActiveTrailInterface $menu_active_trail) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $menu_tree, $menu_active_trail);
+    $this->menuActiveTrail = $menu_active_trail;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('menu.link_tree'),
+      $container->get('menu.active_trail')
+    );
+  }
 
   /**
    * Overrides \Drupal\block\BlockBase::blockForm().
@@ -1194,7 +1236,7 @@ class SuperfishBlock extends SystemMenuBlock {
         case 2:
           $sfplugins['touchscreen']['mode'] = 'window_width';
           $tsbp = $this->configuration['touchbp'];
-          $sfplugins['touchscreen']['breakpoint'] = ($tsbp != 768) ? (int) $tsbp : '';
+          $sfplugins['touchscreen']['breakpoint'] = ($tsbp != 768) ? (float) $tsbp : '';
           break;
 
         case 3:
@@ -1279,7 +1321,7 @@ class SuperfishBlock extends SystemMenuBlock {
           $sfplugins['smallscreen']['mode'] = 'window_width';
           $ssbp = $this->configuration['smallbp'];
           if ($ssbp != 768) {
-            $sfplugins['smallscreen']['breakpoint'] = (int) $ssbp;
+            $sfplugins['smallscreen']['breakpoint'] = (float) $ssbp;
           }
           else {
             $sfplugins['smallscreen']['breakpoint'] = '';
@@ -1461,6 +1503,25 @@ class SuperfishBlock extends SystemMenuBlock {
       ->setMaxDepth($maxdepth)
       ->setActiveTrail($this->menuActiveTrail->getActiveTrailIds($menu_name))
       ->onlyEnabledLinks();
+
+    // For menu blocks with start level greater than 1, only show menu items
+    // from the current active trail. Adjust the root according to the current
+    // position in the menu in order to determine if we can show the subtree.
+    if ($level > 1) {
+      if (count($parameters->activeTrail) >= $level) {
+        // Active trail array is child-first. Reverse it, and pull the new menu
+        // root based on the parent of the configured start level.
+        $menu_trail_ids = array_reverse(array_values($parameters->activeTrail));
+        $menu_root = $menu_trail_ids[$level - 1];
+        $parameters->setRoot($menu_root)->setMinDepth(1);
+        if ($depth > 0) {
+          $parameters->setMaxDepth(min($level - 1 + $depth - 1, $this->menuTree->maxDepth()));
+        }
+      }
+      else {
+        return array();
+      }
+    }
 
     $tree = $this->menuTree->load($menu_name, $parameters);
     $manipulators = [

@@ -6,7 +6,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'iframe' widget with url.
+ * Plugin implementation of the 'Iframe' widget with URL.
  *
  * @FieldWidget(
  *   id = "iframe_url",

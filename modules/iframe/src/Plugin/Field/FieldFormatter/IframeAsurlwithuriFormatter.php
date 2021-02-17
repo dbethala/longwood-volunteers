@@ -9,7 +9,7 @@ use Drupal\Core\Url;
 /**
  * @FieldFormatter(
  *  id = "iframe_asurlwithuri",
- *  label = @Translation("A link with the uri as title"),
+ *  label = @Translation("A link with the URI as the title"),
  *  field_types = {"iframe"}
  * )
  */
